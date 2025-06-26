@@ -5,12 +5,18 @@ from django.db import models
 
 # Create your models here.
 class Carrera(models.Model):
+
+    MODALIDADES = [
+        ('pre', 'Presencial'),
+        ('mx', 'Mixta'),
+        ('vr', 'Virtual')
+    ]
+
     nombre = models.CharField(max_length=30)
     clave = models.CharField(max_length=15)
-    modalidad = models.CharField(max_length=10,
-                                 choices=[('presencial', 'Presencial'), ('virtual', 'Virtual')])
+    modalidad = models.CharField(max_length=10, choices=MODALIDADES)
     def __str__(self):
-        return f"{self.nombre} ({self.get_modalidad_display()})"
+        return f"{self.nombre} ({self.get_modalidad_display()})"# type: ignore 
 
 
 class Estudiante(models.Model):
