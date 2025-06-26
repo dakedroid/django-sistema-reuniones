@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static  %}
+{% block title %}Ing. en Sistemas Computacionales{% endblock title %}
+{% block content %}
+<div class="mt-4 p-5 bg-primary text-white rounded">
+    <h1>Ingeniería en Sistemas Computacionales</h1>
+    <p class="lead">Formando profesionales líderes en tecnología.</p>
+</div>
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Misión</h3>
+        <p>Formar de manera integral ingenieros con competencias profesionales en sistemas de computación, competitivos en las tecnologías de la información y comunicación en tendencia y emergentes, bajo un contexto global, multidisciplinario y sostenible.</p>
+        <h3>Visión</h3>
+        <p>Ser un programa de estudios acreditado con egresados que brinden soluciones de alta calidad en ámbitos de desarrollo e innovación en tecnologías de información y comunicación, contribuyendo al fortalecimiento de nuestra área de influencia nacional e internacional.</p>
+    </div>
+    <div class="col-md-6">
+        <img src="{% static 'img/tecmina.png' %}" class="img-fluid rounded" alt="TecNM">
+    </div>
+</div>
+
+<!-- Objetivo -->
+<div class="card my-4">
+  <div class="card-header bg-info text-white">
+    <h4 class="mb-0">Objetivo</h4>
+  </div>
+  <div class="card-body">
+    <p>Formar profesionistas líderes con visión estratégica y amplio sentido ético; capaz de diseñar, desarrollar, implementar y administrar tecnología computacional para aportar soluciones innovadoras en beneficio de la sociedad; en un contexto global, multidisciplinario y sostenible.</p>
+  </div>
+</div>
+
+<!-- Tabs de Especialidades y Asignaturas -->
+<ul class="nav nav-tabs my-4" id="iscTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="especialidades-tab" data-bs-toggle="tab" data-bs-target="#especialidades" type="button" role="tab" aria-controls="especialidades" aria-selected="true">Especialidades</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="asignaturas-tab" data-bs-toggle="tab" data-bs-target="#asignaturas" type="button" role="tab" aria-controls="asignaturas" aria-selected="false">Asignaturas</button>
+  </li>
+</ul>
+<div class="tab-content" id="iscTabsContent">
+  <div class="tab-pane fade show active" id="especialidades" role="tabpanel" aria-labelledby="especialidades-tab">
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-2">
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Cómputo en la Nube</h5>
+            <ul>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/Especialidad-Computo-en-la-Nube-ISIE-CEN-2022-02-Folleto.pdf" target="_blank">Folleto</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/CEG-2201-FUNDAMENTOS-DE-COMPUTO-EN-LA-NUBE.pdf" target="_blank">Fundamentos de Cómputo en la Nube</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/CEG-2202-ARQUITECTURA-DE-SOLUCIONES-EN-LA-NUBE.pdf" target="_blank">Arquitectura de Soluciones en la Nube</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/CEg-2203-HERRAMIENTAS-DE-SOFTWARE-EN-LA-NUBE.pdf" target="_blank">Herramientas de Software en la Nube</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/CEM-2204-ADMINISTRACION-DE-COMPUTO-EN-LA-NUBE.pdf" target="_blank">Administración de Cómputo en la Nube</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Gestión de Redes de Voz y Datos</h5>
+            <ul>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2023/03/Conmutacion-y-Enrutamiento-de-Redes-de-Datos-II.pdf" target="_blank">Conmutación y enrutamiento de redes de Datos II</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2023/03/Diseno-de-Redes-en-Capa-Fisica.pdf" target="_blank">Diseño de redes en Capa Física</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2023/03/Redes-de-Voz.pdf" target="_blank">Redes de voz</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2023/03/Topicos-Selectos-de-Redes-de-Datos.pdf" target="_blank">Tópicos selectos de redes de datos</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="asignaturas" role="tabpanel" aria-labelledby="asignaturas-tab">
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Asignaturas</h5>
+            <ul>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/Asignaturas_ISC.zip" target="_blank">Asignaturas ISC</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/Asignaturas_Comunes_ISC.zip" target="_blank">Asignaturas Comunes</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2022/11/Asignaturas_Equivalentes_ISC.zip" target="_blank">Asignaturas Equivalentes</a></li>
+              <li><a href="https://minatitlan.tecnm.mx/wp-content/uploads/2024/07/MANUALES_ASIGNATURAS_ISC_REV-0.zip" target="_blank">Guías de prácticas de ISC</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Objetivos Educacionales -->
+<div class="card my-4">
+  <div class="card-header bg-success text-white">
+    <h4 class="mb-0">Objetivos Educacionales de ISC</h4>
+  </div>
+  <div class="card-body">
+    <ol>
+      <li>El egresado desarrolla e implementa aplicaciones computacionales integrando tecnologías actuales y emergentes para el sector productivo y de servicios, con estándares y normas nacionales e internacionales.</li>
+      <li>El egresado soluciona problemas de contexto con base en competencias profesionales en el campo de los modelos computacionales y herramientas tecnológicas de vanguardia, con sentido ético y en un marco de sustentabilidad.</li>
+      <li>El egresado analiza, diseña e implementa interfaces de procesamiento de datos para optimizar procesos y recursos en los diferentes sectores productivos.</li>
+      <li>El egresado diseña, optimiza e implementa escenarios de conectividad de datos que requiere el sector productivo, social y de servicios.</li>
+      <li>El egresado crea y administra proyectos, ejerciendo liderazgo efectivo en los diferentes sectores productivos, sociales y de servicios en los ámbitos nacionales e internacionales.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Atributos de Egreso -->
+<div class="card my-4">
+  <div class="card-header bg-warning text-dark">
+    <h4 class="mb-0">Atributos de Egreso ISC</h4>
+  </div>
+  <div class="card-body">
+    <ol>
+      <li>Diseña y/o implementa aplicaciones con interfaces computacionales para solucionar problemas en diversos contextos, integrando diferentes tecnologías, plataformas, dispositivos y lenguajes de programación.</li>
+      <li>Diseña e implementa proyectos utilizando tecnologías de información conforme a estándares y normas vigentes.</li>
+      <li>Desarrolla y/o administra proyectos, aplicando las tecnologías de la información y comunicación, que impacten en la productividad y competitividad de las organizaciones, a través de la detección de áreas de oportunidad con una visión empresarial.</li>
+      <li>Evalúa y propone tecnologías de hardware que permitan implementar aplicaciones que cumplan estándares y normas vigentes.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Perfil de Egreso -->
+<div class="card my-4">
+  <div class="card-header bg-secondary text-white">
+    <h4 class="mb-0">Perfil de Egreso</h4>
+  </div>
+  <div class="card-body">
+    <ol>
+      <li>Implementa aplicaciones computacionales para solucionar problemas de diversos contextos, integrando diferentes tecnologías, plataformas o dispositivos.</li>
+      <li>Diseña, desarrolla y aplica modelos computacionales para solucionar problemas, mediante la selección y uso de herramientas matemáticas.</li>
+      <li>Diseña e implementa interfaces para la automatización de sistemas de hardware y desarrollo del software asociado.</li>
+      <li>Coordina y participa en equipos multidisciplinarios para la aplicación de soluciones innovadoras en diferentes contextos.</li>
+      <li>Diseña, implementa y administra bases de datos optimizando los recursos disponibles, conforme a las normas vigentes de manejo y seguridad de la información.</li>
+      <li>Desarrolla y administra software para apoyar la productividad y competitividad de las organizaciones cumpliendo con estándares de calidad.</li>
+      <li>Evalúa tecnologías de hardware para soportar aplicaciones de manera efectiva.</li>
+      <li>Detecta áreas de oportunidad empleando una visión empresarial para crear proyectos aplicando las Tecnologías de la Información y Comunicación.</li>
+      <li>Diseña, configura y administra redes de computadoras para crear soluciones de conectividad en la organización, aplicando las normas y estándares vigentes.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Contacto -->
+<div class="card my-4">
+  <div class="card-header bg-dark text-white">
+    <h4 class="mb-0">Contacto</h4>
+  </div>
+  <div class="card-body">
+    <p><strong>Dirección:</strong> Boulevard Institutos Tecnológicos No. 509 Colonia Buena Vista Norte C.P. 96848 Minatitlán, Veracruz, México</p>
+    <p><strong>Teléfono:</strong> 9222027335</p>
+    <p><strong>Jefe de Departamento:</strong> Pablo Francisco Vivas Torres (<a href="mailto:sistemas@minatitlan.tecnm.mx">sistemas@minatitlan.tecnm.mx</a>)</p>
+    <p><strong>Coordinador:</strong> Víctor Ignacio Velasco Huerta (<a href="mailto:dep_isc@minatitlan.tecnm.mx">dep_isc@minatitlan.tecnm.mx</a>)</p>
+    <p><a href="https://minatitlan.tecnm.mx/index.php/ingenieria-en-sistemas-computacionales/" target="_blank">Más información en la página oficial</a></p>
+  </div>
+</div>
+
+{% endblock content %} 

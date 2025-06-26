@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static  %}
+
+{% block title %} Acerca del Tec de Roque {% endblock title%}
+
+{% block content %}
+<h1 class="mb-4">Acerca del Instituto Tecnológico de Roque</h1>
+
+<ul class="nav nav-tabs mb-4" id="aboutTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="historia-tab" data-bs-toggle="tab" data-bs-target="#historia" type="button" role="tab" aria-controls="historia" aria-selected="true">Historia</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="mision-tab" data-bs-toggle="tab" data-bs-target="#mision" type="button" role="tab" aria-controls="mision" aria-selected="false">Misión y Visión</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="oferta-tab" data-bs-toggle="tab" data-bs-target="#oferta" type="button" role="tab" aria-controls="oferta" aria-selected="false">Oferta Educativa</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="valores-tab" data-bs-toggle="tab" data-bs-target="#valores" type="button" role="tab" aria-controls="valores" aria-selected="false">Valores</button>
+  </li>
+</ul>
+<div class="tab-content" id="aboutTabsContent">
+  <div class="tab-pane fade show active" id="historia" role="tabpanel" aria-labelledby="historia-tab">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Historia</h4>
+        <p>El Instituto Tecnológico de Roque (ITRoque), fundado en 1967, es una de las instituciones de educación superior tecnológica más reconocidas de la región Bajío y del país. Forma parte del Tecnológico Nacional de México (TecNM) y se ubica en Celaya, Guanajuato. A lo largo de su historia, el Tec de Roque ha formado a miles de profesionistas que contribuyen al desarrollo agrícola, industrial y tecnológico de México.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="mision" role="tabpanel" aria-labelledby="mision-tab">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title">Misión</h4>
+            <p>Formar profesionistas íntegros, competentes y comprometidos con el desarrollo sustentable, capaces de generar, aplicar y difundir conocimientos científicos y tecnológicos para contribuir al progreso de la sociedad.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title">Visión</h4>
+            <p>Ser una institución líder en educación tecnológica, reconocida por la calidad de sus egresados, su innovación y su impacto en el desarrollo regional y nacional.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="oferta" role="tabpanel" aria-labelledby="oferta-tab">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Oferta Educativa</h4>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Ingeniería en Agronomía</li>
+          <li class="list-group-item">Ingeniería en Industrias Alimentarias</li>
+          <li class="list-group-item">Ingeniería en Innovación Agrícola Sustentable</li>
+          <li class="list-group-item">Ingeniería en Gestión Empresarial</li>
+          <li class="list-group-item">Ingeniería en Tecnologías de la Información y Comunicaciones</li>
+          <li class="list-group-item">Ingeniería en Sistemas Computacionales</li>
+          <li class="list-group-item">Ingeniería en Administración</li>
+          <li class="list-group-item">Maestría en Ciencias en Alimentos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="valores" role="tabpanel" aria-labelledby="valores-tab">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Valores Institucionales</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Responsabilidad</li>
+              <li class="list-group-item">Honestidad</li>
+              <li class="list-group-item">Respeto</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Trabajo en equipo</li>
+              <li class="list-group-item">Innovación</li>
+              <li class="list-group-item">Compromiso social</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="mt-4">Para más información visita el <a href="https://roque.tecnm.mx/" target="_blank">sitio oficial del Instituto Tecnológico de Roque</a>.</p>
+{% endblock content%}

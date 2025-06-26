@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static  %}
+{% block title %}Desarrollo de Apps{% endblock title %}
+{% block content %}
+<div class="mt-4 p-5 bg-success text-white rounded">
+    <h1>Ingeniería en Desarrollo de Aplicaciones</h1>
+    <p class="lead">Innovando en el desarrollo de software y aplicaciones móviles.</p>
+</div>
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>Misión</h3>
+        <p>Formar desarrolladores de aplicaciones con sólidos conocimientos técnicos, creatividad y ética, capaces de crear soluciones innovadoras para el entorno digital.</p>
+        <h3>Visión</h3>
+        <p>Ser un referente en la formación de desarrolladores de aplicaciones reconocidos por su calidad, innovación y aportación al sector tecnológico.</p>
+    </div>
+    <div class="col-md-6">
+        <img src="{% static 'img/tecmina.png' %}" class="img-fluid rounded" alt="TecNM">
+    </div>
+</div>
+
+<!-- Objetivo General -->
+<div class="card my-4">
+  <div class="card-header bg-info text-white">
+    <h4 class="mb-0">Objetivo General</h4>
+  </div>
+  <div class="card-body">
+    <p>Formar ingenieros competentes en el diseño y desarrollo de aplicaciones web, móvil y en la nube ofreciendo soluciones innovadoras y eficientes que respondan a las necesidades del mercado digital y permitan la mejora del desempeño de las organizaciones con tecnologías de vanguardia, en un entorno complejo y globalizado con compromiso ético y sostenible.</p>
+  </div>
+</div>
+
+<!-- Perfil de Ingreso -->
+<div class="card my-4">
+  <div class="card-header bg-secondary text-white">
+    <h4 class="mb-0">Perfil de Ingreso</h4>
+  </div>
+  <div class="card-body">
+    <ul>
+      <li>Habilidades lógico-matemáticas.</li>
+      <li>Habilidades de pensamiento crítico, de análisis y síntesis.</li>
+      <li>Habilidades de comunicación oral y escrita.</li>
+      <li>Habilidad de razonamiento cuantitativo.</li>
+      <li>Habilidades de programación básica.</li>
+      <li>Habilidades de uso de herramientas tecnológicas.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Perfil de Egreso -->
+<div class="card my-4">
+  <div class="card-header bg-success text-white">
+    <h4 class="mb-0">Perfil de Egreso</h4>
+  </div>
+  <div class="card-body">
+    <ul>
+      <li>Analiza, diseña y desarrolla aplicaciones web, móvil o de cómputo en la nube para satisfacer los requerimientos de los usuarios.</li>
+      <li>Desarrolla bases de datos relacionales y no relacionales utilizando estándares internacionales para crear sistemas de información robustos, eficientes y sostenibles.</li>
+      <li>Desarrolla estrategias basadas en la mercadotecnia digital, que le permitan a los usuarios generar experiencias y contribuir con las organizaciones para posicionar sus productos y servicios en Internet con sentido ético.</li>
+      <li>Formula, diseña, ejecuta y evalúa proyectos de desarrollo de aplicaciones orientados a la satisfacción de necesidades para potenciar los servicios de las organizaciones y la sociedad con responsabilidad ética.</li>
+      <li>Desarrolla proyectos de inversión viables, empleando como una de las estrategias de solución el uso de nuevas tecnologías, para la satisfacción de necesidades de las organizaciones y la sociedad.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Contacto -->
+<div class="card my-4">
+  <div class="card-header bg-dark text-white">
+    <h4 class="mb-0">Contacto</h4>
+  </div>
+  <div class="card-body">
+    <p><strong>Dirección:</strong> Boulevard Institutos Tecnológicos No. 509 Colonia Buena Vista Norte C.P. 96848 Minatitlán, Veracruz, México</p>
+    <p><strong>Teléfono:</strong> 9222027335</p>
+    <p><strong>Jefe de Departamento:</strong> Pablo Francisco Vivas Torres (<a href="mailto:sistemas@minatitlan.tecnm.mx">sistemas@minatitlan.tecnm.mx</a>)</p>
+    <p><strong>Coordinador:</strong> Víctor Ignacio Velasco Huerta (<a href="mailto:dep_isc@minatitlan.tecnm.mx">dep_isc@minatitlan.tecnm.mx</a>)</p>
+    <p><a href="https://minatitlan.tecnm.mx/index.php/ingenieria-en-desarrollo-de-aplicaciones/" target="_blank">Más información en la página oficial</a></p>
+  </div>
+</div>
+
+{% endblock content %} 

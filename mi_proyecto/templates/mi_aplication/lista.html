@@ -1,0 +1,17 @@
+{% extends "base.html"%}
+{% load static %}
+{% block title %} Lista {% endblock %}
+{% block content %}
+    <h1>Autoridades </h1>
+    <div class="row">
+        {% for item in lista %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="card-text">{{ item }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
