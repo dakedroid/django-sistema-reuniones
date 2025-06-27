@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Eliminar Carrera{% endblock %}
+{% block content %}
+<div class="container mt-4" style="max-width: 500px;">
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+      <h4 class="mb-0">¿Estás seguro de que deseas eliminar la carrera?</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Nombre:</strong> {{ carrera.nombre }}</p>
+      <p><strong>Clave:</strong> {{ carrera.clave }}</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        <a href="{% url 'lista_carreras' %}" class="btn btn-secondary">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} 

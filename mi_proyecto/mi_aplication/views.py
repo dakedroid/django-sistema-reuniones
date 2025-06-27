@@ -61,6 +61,24 @@ def crear_carrera(request):
         form = CarreraForm()
     return render(request, 'mi_aplication/crear_carrera.html', {'form':form})
 
+def editar_carrera(request, pk):
+    carrera = get_object_or_404(Carrera, pk=pk)
+    if request.method == "POST":
+        form = CarreraForm(request.POST, instance=carrera)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_carreras')
+    else:
+        form = CarreraForm(instance=carrera)
+    return render(request, 'mi_aplication/editar_carrera.html', {'form': form})
+
+def eliminar_carrera(request, pk):
+    carrera = get_object_or_404(Carrera, pk=pk)
+    if request.method == "POST":
+        carrera.delete()
+        return redirect('lista_carreras')
+    return render(request, 'mi_aplication/eliminar_carrera.html', {'carrera': carrera})
+
 def lista_carreras(request):
     carreras = Carrera.objects.all()
     return render(request, 'mi_aplication/lista_carreras.html', {'carreras': carreras})
