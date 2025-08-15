@@ -1,5 +1,8 @@
 # 🏗️ Arquitectura de la Aplicación - Sistema de Reuniones Nacionales TecNM
 
+## Nombre el Docente:
+Kevin David Molina Gómez
+
 ## 📁 Estructura de Archivos Completa
 
 ```
