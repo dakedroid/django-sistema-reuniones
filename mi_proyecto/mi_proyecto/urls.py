@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.shortcuts import redirect
 
 
 urlpatterns = [
-    path('', include('home.urls')),
+    path('', include('mi_aplication.urls')),
     path('mi_aplication/', include('mi_aplication.urls')),
     path('admin/', admin.site.urls),
 ]
