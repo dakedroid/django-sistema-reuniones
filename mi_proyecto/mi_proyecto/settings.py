@@ -74,14 +74,25 @@ WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Configuración para MongoDB usando mongoengine
+import mongoengine
+
+# Conectar a MongoDB
+mongoengine.connect(
+    db='tecnm_reuniones',
+    host='127.0.0.1',
+    port=27017,
+    username='admin',
+    password='admin12345',
+    authentication_source='admin',
+    authentication_mechanism='SCRAM-SHA-1'
+)
+
+# Configuración de Django (usando SQLite para compatibilidad)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangodb',
-        'USER': 'django',
-        'PASSWORD': 'Mapa1000!',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

@@ -1,0 +1,367 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Estadísticas - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Estadísticas del Sistema
+                </h2>
+                <div>
+                    <a href="{% url 'index_reuniones' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                    <button class="btn btn-tecnm-primary" onclick="window.print()">
+                        <i class="fas fa-print me-1"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tarjetas de Resumen -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card card-tecnm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                            <h4 class="card-title">{{ total_reuniones|default:0 }}</h4>
+                            <p class="card-text">Total de Reuniones</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card card-tecnm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-handshake fa-3x text-success mb-3"></i>
+                            <h4 class="card-title">{{ total_acuerdos|default:0 }}</h4>
+                            <p class="card-text">Total de Acuerdos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card card-tecnm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                            <h4 class="card-title">{{ total_participantes|default:0 }}</h4>
+                            <p class="card-text">Total de Participantes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card card-tecnm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                            <h4 class="card-title">{{ total_documentos|default:0 }}</h4>
+                            <p class="card-text">Total de Documentos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row">
+                <!-- Gráfico de Reuniones por Tipo -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Reuniones por Tipo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="reunionesTipoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Reuniones por Estado -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-doughnut me-2"></i>Reuniones por Estado
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="reunionesEstadoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Acuerdos por Categoría -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Acuerdos por Categoría
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="acuerdosCategoriaChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Acuerdos por Estado -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line me-2"></i>Acuerdos por Estado
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="acuerdosEstadoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Participantes por Tipo -->
+                <div class="col-md-12 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Participantes por Tipo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="participantesTipoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tablas de Datos -->
+            <div class="row">
+                <!-- Tabla de Reuniones por Tipo -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table me-2"></i>Reuniones por Tipo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Cantidad</th>
+                                            <th>Porcentaje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for tipo, cantidad in reuniones_por_tipo.items %}
+                                        <tr>
+                                            <td>{{ tipo }}</td>
+                                            <td>{{ cantidad }}</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         style="width: {% widthratio cantidad total_reuniones 100 %}%">
+                                                        {% widthratio cantidad total_reuniones 100 %}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Acuerdos por Categoría -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table me-2"></i>Acuerdos por Categoría
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Categoría</th>
+                                            <th>Cantidad</th>
+                                            <th>Porcentaje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for categoria, cantidad in acuerdos_por_categoria.items %}
+                                        <tr>
+                                            <td>{{ categoria }}</td>
+                                            <td>{{ cantidad }}</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         style="width: {% widthratio cantidad total_acuerdos 100 %}%">
+                                                        {% widthratio cantidad total_acuerdos 100 %}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Colores para los gráficos
+const colors = [
+    '#1E3A8A', '#16A34A', '#F97316', '#DC2626', '#7C3AED',
+    '#059669', '#D97706', '#DC2626', '#7C2D12', '#1F2937'
+];
+
+// Gráfico de Reuniones por Tipo
+const reunionesTipoCtx = document.getElementById('reunionesTipoChart').getContext('2d');
+new Chart(reunionesTipoCtx, {
+    type: 'pie',
+    data: {
+        labels: [{% for tipo, cantidad in reuniones_por_tipo.items %}'{{ tipo }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for tipo, cantidad in reuniones_por_tipo.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ reuniones_por_tipo|length }}),
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Gráfico de Reuniones por Estado
+const reunionesEstadoCtx = document.getElementById('reunionesEstadoChart').getContext('2d');
+new Chart(reunionesEstadoCtx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for estado, cantidad in reuniones_por_estado.items %}'{{ estado }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for estado, cantidad in reuniones_por_estado.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ reuniones_por_estado|length }}),
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Gráfico de Acuerdos por Categoría
+const acuerdosCategoriaCtx = document.getElementById('acuerdosCategoriaChart').getContext('2d');
+new Chart(acuerdosCategoriaCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for categoria, cantidad in acuerdos_por_categoria.items %}'{{ categoria }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Cantidad',
+            data: [{% for categoria, cantidad in acuerdos_por_categoria.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ acuerdos_por_categoria|length }}),
+            borderColor: colors.slice(0, {{ acuerdos_por_categoria|length }}),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Gráfico de Acuerdos por Estado
+const acuerdosEstadoCtx = document.getElementById('acuerdosEstadoChart').getContext('2d');
+new Chart(acuerdosEstadoCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for estado, cantidad in acuerdos_por_estado.items %}'{{ estado }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Cantidad',
+            data: [{% for estado, cantidad in acuerdos_por_estado.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            borderColor: '#1E3A8A',
+            backgroundColor: 'rgba(30, 58, 138, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Gráfico de Participantes por Tipo
+const participantesTipoCtx = document.getElementById('participantesTipoChart').getContext('2d');
+new Chart(participantesTipoCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for tipo, cantidad in participantes_por_tipo.items %}'{{ tipo }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Cantidad',
+            data: [{% for tipo, cantidad in participantes_por_tipo.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ participantes_por_tipo|length }}),
+            borderColor: colors.slice(0, {{ participantes_por_tipo|length }}),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

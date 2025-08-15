@@ -1,0 +1,195 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}{{ participante.nombre }} {{ participante.apellido_paterno }} - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-user me-2"></i>{{ participante.nombre }} {{ participante.apellido_paterno }}
+                </h2>
+                <div>
+                    <a href="{% url 'editar_participante' participante.id %}" class="btn btn-tecnm-primary me-2">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                    <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#eliminarModal">
+                        <i class="fas fa-trash me-1"></i>Eliminar
+                    </button>
+                    <a href="{% url 'lista_participantes' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Información General -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información Personal
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Nombre Completo:</strong> {{ participante.nombre }} {{ participante.apellido_paterno }} {{ participante.apellido_materno }}</p>
+                                    <p><strong>Tipo de Participante:</strong> 
+                                        <span class="badge bg-info">{{ participante.get_tipo_participante_display }}</span>
+                                    </p>
+                                    <p><strong>Instituto:</strong> {{ participante.instituto }}</p>
+                                    <p><strong>Departamento:</strong> {{ participante.departamento|default:"No especificado" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Email:</strong> <a href="mailto:{{ participante.email }}">{{ participante.email }}</a></p>
+                                    <p><strong>Teléfono:</strong> {{ participante.telefono|default:"No especificado" }}</p>
+                                    <p><strong>Estado de Confirmación:</strong> 
+                                        {% if participante.confirmado %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Confirmado
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Pendiente
+                                            </span>
+                                        {% endif %}
+                                    </p>
+                                    <p><strong>ID del Participante:</strong> <code>{{ participante.id }}</code></p>
+                                </div>
+                            </div>
+                            {% if participante.observaciones %}
+                            <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6><i class="fas fa-sticky-note me-2"></i>Observaciones</h6>
+                                    <p>{{ participante.observaciones }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Estadísticas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ reuniones|length }}</h4>
+                                        <small>Reuniones Asociadas</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ participante.get_tipo_participante_display|length }}</h4>
+                                        <small>Rol Actual</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reuniones Asociadas -->
+            {% if reuniones %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calendar-alt me-2"></i>Reuniones Asociadas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Título</th>
+                                            <th>Tipo</th>
+                                            <th>Estado</th>
+                                            <th>Fecha</th>
+                                            <th>Sede</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reunion in reuniones %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ reunion.titulo }}</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">{{ reunion.get_tipo_display }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{% if reunion.estado == 'PLANIFICADA' %}warning{% elif reunion.estado == 'EN_CURSO' %}info{% elif reunion.estado == 'FINALIZADA' %}success{% else %}danger{% endif %}">
+                                                    {{ reunion.get_estado_display }}
+                                                </span>
+                                            </td>
+                                            <td>{{ reunion.fecha_inicio|date:"d/m/Y" }} - {{ reunion.fecha_fin|date:"d/m/Y" }}</td>
+                                            <td>{{ reunion.sede }}</td>
+                                            <td>
+                                                <a href="{% url 'detalle_reunion' reunion.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-tecnm">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay reuniones asociadas</h5>
+                            <p class="text-muted">Este participante no está registrado en ninguna reunión.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Eliminación -->
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="eliminarModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al participante <strong>{{ participante.nombre }} {{ participante.apellido_paterno }}</strong>?</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="{% url 'eliminar_participante' participante.id %}" class="btn btn-danger">
+                    <i class="fas fa-trash me-1"></i>Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

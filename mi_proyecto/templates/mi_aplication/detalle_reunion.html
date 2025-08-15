@@ -1,0 +1,427 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}{{ reunion.titulo }} - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>{{ reunion.titulo }}
+                </h2>
+                <div>
+                    <a href="{% url 'editar_reunion' reunion.id %}" class="btn btn-tecnm-primary me-2">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                    <a href="{% url 'subir_documento_reunion' reunion.id %}" class="btn btn-tecnm-secondary me-2">
+                        <i class="fas fa-upload me-1"></i>Subir Documento
+                    </a>
+                    <a href="{% url 'agregar_participante_existente_reunion' reunion.id %}" class="btn btn-tecnm-success me-2">
+                        <i class="fas fa-users me-1"></i>Agregar Participante Existente
+                    </a>
+                    <a href="{% url 'agregar_participante_reunion' reunion.id %}" class="btn btn-tecnm-warning me-2">
+                        <i class="fas fa-user-plus me-1"></i>Agregar Participante Nuevo
+                    </a>
+                    <button class="btn btn-outline-primary me-2" onclick="window.print()">
+                        <i class="fas fa-print me-1"></i>Imprimir
+                    </button>
+                    <a href="{% url 'lista_reuniones' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Información General -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información General
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Tipo:</strong> 
+                                        <span class="badge bg-primary">{{ reunion.get_tipo_display }}</span>
+                                    </p>
+                                    <p><strong>Estado:</strong> 
+                                        <span class="badge bg-{% if reunion.estado == 'PLANIFICADA' %}warning{% elif reunion.estado == 'EN_CURSO' %}info{% elif reunion.estado == 'FINALIZADA' %}success{% else %}danger{% endif %}">
+                                            {{ reunion.get_estado_display }}
+                                        </span>
+                                    </p>
+                                    <p><strong>Sede:</strong> {{ reunion.sede }}</p>
+                                    <p><strong>Modalidad:</strong> 
+                                        <span class="badge bg-{% if reunion.modalidad == 'PRESENCIAL' %}primary{% elif reunion.modalidad == 'VIRTUAL' %}success{% else %}warning{% endif %}">
+                                            {{ reunion.get_modalidad_display }}
+                                        </span>
+                                    </p>
+                                    <p><strong>Organizador:</strong> {{ reunion.organizador_principal|default:"No especificado" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Fecha de Inicio:</strong> {{ reunion.fecha_inicio|date:"d/m/Y H:i" }}</p>
+                                    <p><strong>Fecha de Fin:</strong> {{ reunion.fecha_fin|date:"d/m/Y H:i" }}</p>
+                                    <p><strong>Participantes Esperados:</strong> {{ reunion.participantes_esperados }}</p>
+                                    <p><strong>Presupuesto:</strong> ${{ reunion.presupuesto_asignado|default:"No asignado" }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6><i class="fas fa-bullseye me-2"></i>Objetivos</h6>
+                                    <p>{{ reunion.objetivos }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                                                            <div class="row">
+                                    <div class="col-12">
+                                        <h6><i class="fas fa-align-left me-2"></i>Descripción</h6>
+                                        <p>{{ reunion.descripcion }}</p>
+                                    </div>
+                                </div>
+                                
+                                {% if reunion.enlace_videollamada or reunion.direccion_fisica %}
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6><i class="fas fa-map-marker-alt me-2"></i>Información de Ubicación</h6>
+                                        {% if reunion.enlace_videollamada %}
+                                        <p><strong>Enlace de Videollamada:</strong> 
+                                            <a href="{{ reunion.enlace_videollamada }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-video me-1"></i>Unirse a la Videollamada
+                                            </a>
+                                        </p>
+                                        {% endif %}
+                                        {% if reunion.direccion_fisica %}
+                                        <p><strong>Dirección Física:</strong> 
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ reunion.direccion_fisica }}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Estadísticas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ participantes_confirmados }}</h4>
+                                        <small>Participantes Confirmados</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ acuerdos_completados }}</h4>
+                                        <small>Acuerdos Completados</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ reunion.agenda|length }}</h4>
+                                        <small>Actividades Programadas</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="stats-card">
+                                        <h4>{{ reunion.documentos|length }}</h4>
+                                        <small>Documentos</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas de Información -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <ul class="nav nav-tabs card-header-tabs" id="reunionTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="agenda-tab" data-bs-toggle="tab" data-bs-target="#agenda" type="button" role="tab">
+                                        <i class="fas fa-calendar me-2"></i>Agenda
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="participantes-tab" data-bs-toggle="tab" data-bs-target="#participantes" type="button" role="tab">
+                                        <i class="fas fa-users me-2"></i>Participantes
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="acuerdos-tab" data-bs-toggle="tab" data-bs-target="#acuerdos" type="button" role="tab">
+                                        <i class="fas fa-handshake me-2"></i>Acuerdos
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="documentos-tab" data-bs-toggle="tab" data-bs-target="#documentos" type="button" role="tab">
+                                        <i class="fas fa-file-alt me-2"></i>Documentos
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="reunionTabsContent">
+                                <!-- Pestaña Agenda -->
+                                <div class="tab-pane fade show active" id="agenda" role="tabpanel">
+                                    {% if reunion.agenda %}
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Hora</th>
+                                                        <th>Actividad</th>
+                                                        <th>Responsable</th>
+                                                        <th>Tipo</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for actividad in reunion.agenda %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>{{ actividad.titulo }}</strong><br>
+                                                            <small class="text-muted">{{ actividad.descripcion|default:"Sin descripción" }}</small>
+                                                        </td>
+                                                        <td>{{ actividad.responsable|default:"No asignado" }}</td>
+                                                        <td>
+                                                            <span class="badge bg-info">{{ actividad.get_tipo_actividad_display }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#actividadModal{{ forloop.counter }}">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">No hay agenda programada</h5>
+                                            <p class="text-muted">La agenda de esta reunión aún no ha sido definida.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Pestaña Participantes -->
+                                <div class="tab-pane fade" id="participantes" role="tabpanel">
+                                    {% if reunion.participantes %}
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th>Instituto</th>
+                                                        <th>Cargo</th>
+                                                        <th>Contacto</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for participante in reunion.participantes %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ participante.nombre }} {{ participante.apellido_paterno }} {{ participante.apellido_materno }}</strong>
+                                                        </td>
+                                                        <td>{{ participante.instituto }}</td>
+                                                        <td>
+                                                            <span class="badge bg-info">{{ participante.get_tipo_participante_display }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <small>
+                                                                <i class="fas fa-envelope me-1"></i>{{ participante.email }}<br>
+                                                                <i class="fas fa-phone me-1"></i>{{ participante.telefono|default:"N/A" }}
+                                                            </small>
+                                                        </td>
+                                                        <td>
+                                                            {% if participante.confirmado %}
+                                                                <span class="badge bg-success">
+                                                                    <i class="fas fa-check me-1"></i>Confirmado
+                                                                </span>
+                                                            {% else %}
+                                                                <span class="badge bg-warning">
+                                                                    <i class="fas fa-clock me-1"></i>Pendiente
+                                                                </span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">No hay participantes registrados</h5>
+                                            <p class="text-muted">Los participantes de esta reunión aún no han sido registrados.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Pestaña Acuerdos -->
+                                <div class="tab-pane fade" id="acuerdos" role="tabpanel">
+                                    {% if acuerdos %}
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Título</th>
+                                                        <th>Categoría</th>
+                                                        <th>Responsable</th>
+                                                        <th>Estado</th>
+                                                        <th>Prioridad</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for acuerdo in acuerdos %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ acuerdo.titulo }}</strong><br>
+                                                            <small class="text-muted">{{ acuerdo.descripcion|truncatechars:50 }}</small>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge bg-secondary">{{ acuerdo.get_categoria_display }}</span>
+                                                        </td>
+                                                        <td>{{ acuerdo.responsable }}</td>
+                                                        <td>
+                                                            <span class="badge bg-{% if acuerdo.estado == 'PENDIENTE' %}warning{% elif acuerdo.estado == 'EN_PROCESO' %}info{% elif acuerdo.estado == 'COMPLETADO' %}success{% else %}danger{% endif %}">
+                                                                {{ acuerdo.get_estado_display }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge bg-{% if acuerdo.prioridad == 'BAJA' %}success{% elif acuerdo.prioridad == 'MEDIA' %}warning{% elif acuerdo.prioridad == 'ALTA' %}danger{% else %}dark{% endif %}">
+                                                                {{ acuerdo.get_prioridad_display }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{% url 'detalle_acuerdo' acuerdo.id %}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="fas fa-handshake fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">No hay acuerdos registrados</h5>
+                                            <p class="text-muted">Los acuerdos de esta reunión aún no han sido registrados.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Pestaña Documentos -->
+                                <div class="tab-pane fade" id="documentos" role="tabpanel">
+                                    {% if reunion.documentos %}
+                                        <div class="row">
+                                            {% for documento in reunion.documentos %}
+                                            <div class="col-md-6 col-lg-4 mb-3">
+                                                <div class="card h-100">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <i class="fas fa-file-alt fa-2x text-primary me-3"></i>
+                                                            <div>
+                                                                <h6 class="card-title mb-1">{{ documento.titulo }}</h6>
+                                                                <small class="text-muted">{{ documento.get_tipo_display }}</small>
+                                                            </div>
+                                                        </div>
+                                                        <p class="card-text small">{{ documento.descripcion|truncatechars:100 }}</p>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-user me-1"></i>{{ documento.subido_por }}
+                                                            </small>
+                                                            {% if documento.url %}
+                                                            <a href="{{ documento.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">No hay documentos</h5>
+                                            <p class="text-muted">Los documentos de esta reunión aún no han sido subidos.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales para detalles de actividades -->
+{% for actividad in reunion.agenda %}
+<div class="modal fade" id="actividadModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header card-header-tecnm">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar me-2"></i>{{ actividad.titulo }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-clock me-2"></i>Horario</h6>
+                        <p><strong>{{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</strong></p>
+                        <h6><i class="fas fa-user me-2"></i>Responsable</h6>
+                        <p>{{ actividad.responsable|default:"No asignado" }}</p>
+                        <h6><i class="fas fa-tag me-2"></i>Tipo de Actividad</h6>
+                        <p><span class="badge bg-info">{{ actividad.get_tipo_actividad_display }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-align-left me-2"></i>Descripción</h6>
+                        <p>{{ actividad.descripcion|default:"Sin descripción" }}</p>
+                        {% if actividad.documentos %}
+                        <h6><i class="fas fa-file-alt me-2"></i>Documentos Relacionados</h6>
+                        <ul class="list-unstyled">
+                            {% for doc in actividad.documentos %}
+                            <li><i class="fas fa-file me-1"></i>{{ doc.titulo }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

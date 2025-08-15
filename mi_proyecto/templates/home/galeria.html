@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block title %}Galería | TecNM{% endblock title %}
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Galería de Imágenes</h1>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{% static 'img/roque1.JPG' %}" class="card-img-top" alt="Imagen 1">
+                <div class="card-body">
+                    <h5 class="card-title">Inauguración del Curso</h5>
+                    <p class="card-text">Momento especial durante la inauguración del curso de Desarrollo de Aplicaciones.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{% static 'img/roque2.JPG' %}" class="card-img-top" alt="Imagen 2">
+                <div class="card-body">
+                    <h5 class="card-title">Sede I.T De Roque</h5>
+                    <p class="card-text">Vista de las instalaciones del Instituto Tecnológico de Roque.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{% static 'img/roque3.JPG' %}" class="card-img-top" alt="Imagen 3">
+                <div class="card-body">
+                    <h5 class="card-title">¡Todos Somos TECNM!</h5>
+                    <p class="card-text">Comunidad estudiantil y docente del TecNM.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

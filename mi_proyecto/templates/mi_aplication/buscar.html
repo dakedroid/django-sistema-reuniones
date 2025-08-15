@@ -1,0 +1,260 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Búsqueda - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-search me-2"></i>Búsqueda General
+                </h2>
+                <div>
+                    <a href="{% url 'index_reuniones' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Formulario de Búsqueda -->
+            <div class="card card-tecnm mb-4">
+                <div class="card-header card-header-tecnm">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2"></i>Buscar en el Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" name="q" id="q" class="form-control form-control-lg" 
+                                   value="{{ query }}" placeholder="Buscar reuniones, acuerdos, participantes, documentos...">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-tecnm-primary btn-lg w-100">
+                                <i class="fas fa-search me-2"></i>Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if query %}
+                <!-- Resultados de Búsqueda -->
+                <div class="row">
+                    <!-- Resultados de Reuniones -->
+                    {% if resultados.reuniones %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-calendar-alt me-2"></i>Reuniones ({{ resultados.reuniones|length }})
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% for reunion in resultados.reuniones %}
+                                <div class="border-bottom pb-3 mb-3">
+                                    <h6>
+                                        <a href="{% url 'detalle_reunion' reunion.id %}" class="text-decoration-none">
+                                            {{ reunion.titulo }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted small mb-2">{{ reunion.descripcion|truncatechars:100 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-primary">{{ reunion.get_tipo_display }}</span>
+                                        <small class="text-muted">{{ reunion.fecha_inicio|date:"d/m/Y" }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Resultados de Acuerdos -->
+                    {% if resultados.acuerdos %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-handshake me-2"></i>Acuerdos ({{ resultados.acuerdos|length }})
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% for acuerdo in resultados.acuerdos %}
+                                <div class="border-bottom pb-3 mb-3">
+                                    <h6>
+                                        <a href="{% url 'detalle_acuerdo' acuerdo.id %}" class="text-decoration-none">
+                                            {{ acuerdo.titulo }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted small mb-2">{{ acuerdo.descripcion|truncatechars:100 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-secondary">{{ acuerdo.get_categoria_display }}</span>
+                                        <small class="text-muted">{{ acuerdo.responsable }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Resultados de Participantes -->
+                    {% if resultados.participantes %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>Participantes ({{ resultados.participantes|length }})
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% for participante in resultados.participantes %}
+                                <div class="border-bottom pb-3 mb-3">
+                                    <h6>{{ participante.nombre }} {{ participante.apellido_paterno }} {{ participante.apellido_materno }}</h6>
+                                    <p class="text-muted small mb-2">{{ participante.instituto }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-info">{{ participante.get_tipo_participante_display }}</span>
+                                        <small class="text-muted">{{ participante.email }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Resultados de Documentos -->
+                    {% if resultados.documentos %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-alt me-2"></i>Documentos ({{ resultados.documentos|length }})
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% for documento in resultados.documentos %}
+                                <div class="border-bottom pb-3 mb-3">
+                                    <h6>{{ documento.titulo }}</h6>
+                                    <p class="text-muted small mb-2">{{ documento.descripcion|truncatechars:100 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-info">{{ documento.get_tipo_display }}</span>
+                                        <small class="text-muted">{{ documento.fecha_subida|date:"d/m/Y" }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Resumen de Resultados -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-bar me-2"></i>Resumen de Resultados
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="stats-card">
+                                            <h4>{{ resultados.reuniones|length }}</h4>
+                                            <small>Reuniones</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="stats-card">
+                                            <h4>{{ resultados.acuerdos|length }}</h4>
+                                            <small>Acuerdos</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="stats-card">
+                                            <h4>{{ resultados.participantes|length }}</h4>
+                                            <small>Participantes</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="stats-card">
+                                            <h4>{{ resultados.documentos|length }}</h4>
+                                            <small>Documentos</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <p class="text-muted">
+                                        Se encontraron <strong>{{ resultados.reuniones|length|add:resultados.acuerdos|length|add:resultados.participantes|length|add:resultados.documentos|length }}</strong> 
+                                        resultados para "<strong>{{ query }}</strong>"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <!-- Instrucciones de Búsqueda -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-tecnm">
+                            <div class="card-header card-header-tecnm">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>¿Cómo buscar?
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-calendar-alt me-2"></i>Reuniones</h6>
+                                        <p class="text-muted">Busca por título, descripción, sede o tipo de reunión.</p>
+                                        <ul class="text-muted">
+                                            <li>RNSA - Reunión Nacional de Subdirectores Académicos</li>
+                                            <li>RNPD - Reunión Nacional de Posgrado y Desarrollo</li>
+                                            <li>RNVE - Reunión Nacional de Vinculación y Extensión</li>
+                                            <li>RNCA - Reunión Nacional de Calidad y Acreditación</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-handshake me-2"></i>Acuerdos</h6>
+                                        <p class="text-muted">Busca por título, descripción, responsable o categoría.</p>
+                                        <ul class="text-muted">
+                                            <li>Académica, Administrativa, Financiera</li>
+                                            <li>Infraestructura, Vinculación, Investigación</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-users me-2"></i>Participantes</h6>
+                                        <p class="text-muted">Busca por nombre, apellidos, instituto o cargo.</p>
+                                        <ul class="text-muted">
+                                            <li>Director, Subdirector, Coordinador</li>
+                                            <li>Docente, Administrativo, Invitado</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-file-alt me-2"></i>Documentos</h6>
+                                        <p class="text-muted">Busca por título, descripción o tipo de documento.</p>
+                                        <ul class="text-muted">
+                                            <li>Agenda, Acta, Presentación</li>
+                                            <li>Memorándum, Circular, Otro</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

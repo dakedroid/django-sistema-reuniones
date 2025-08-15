@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 # Create your views here.
 
 # Create your views here.
 def index(request):
-    return render(request, 'home/index.html')
+    # Redirigir directamente al sistema de reuniones nacionales
+    return redirect('index_reuniones')
 
 def about(request):
     return render(request, 'home/about.html')
@@ -18,6 +19,9 @@ def sistemas(request):
 
 def desarrolloapps(request):
     return render(request, 'home/desarrolloapps.html')
+
+def galeria(request):
+    return render(request, 'home/galeria.html')
 
 
 

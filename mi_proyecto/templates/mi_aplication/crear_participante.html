@@ -1,0 +1,175 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Crear Participante - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Crear Nuevo Participante
+                </h2>
+                <div>
+                    <a href="{% url 'lista_participantes' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user-plus me-2"></i>Información del Participante
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="nombre" class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="apellido_paterno" class="form-label">Apellido Paterno *</label>
+                                        <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="apellido_materno" class="form-label">Apellido Materno</label>
+                                        <input type="text" class="form-control" id="apellido_materno" name="apellido_materno">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" name="telefono" 
+                                               placeholder="+52 123 456 7890">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="instituto" class="form-label">Instituto *</label>
+                                        <input type="text" class="form-control" id="instituto" name="instituto" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="departamento" class="form-label">Departamento</label>
+                                        <input type="text" class="form-control" id="departamento" name="departamento" 
+                                               placeholder="Departamento o área">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tipo_participante" class="form-label">Tipo de Participante *</label>
+                                        <select class="form-select" id="tipo_participante" name="tipo_participante" required>
+                                            <option value="">Seleccionar tipo...</option>
+                                            {% for codigo, nombre in tipos_participante %}
+                                            <option value="{{ codigo }}">{{ nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmado" class="form-label">Estado de Confirmación</label>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="confirmado" name="confirmado">
+                                            <label class="form-check-label" for="confirmado">
+                                                Confirmado para asistir
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="observaciones" class="form-label">Observaciones</label>
+                                    <textarea class="form-control" id="observaciones" name="observaciones" rows="3" 
+                                              placeholder="Observaciones sobre el participante..."></textarea>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-outline-secondary me-md-2" onclick="history.back()">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </button>
+                                    <button type="submit" class="btn btn-tecnm-primary">
+                                        <i class="fas fa-save me-1"></i>Crear Participante
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="fas fa-lightbulb me-2"></i>Consejos</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-check text-success me-1"></i>Completa todos los campos obligatorios (*)</li>
+                                <li><i class="fas fa-check text-success me-1"></i>Verifica que el email sea válido</li>
+                                <li><i class="fas fa-check text-success me-1"></i>Especifica el instituto correctamente</li>
+                                <li><i class="fas fa-check text-success me-1"></i>Selecciona el tipo de participante apropiado</li>
+                            </ul>
+                            
+                            <hr>
+                            
+                            <h6><i class="fas fa-users me-2"></i>Tipos de Participante</h6>
+                            <ul class="list-unstyled small">
+                                <li><strong>Director:</strong> Director del instituto</li>
+                                <li><strong>Subdirector:</strong> Subdirector académico</li>
+                                <li><strong>Coordinador:</strong> Coordinador de área</li>
+                                <li><strong>Docente:</strong> Profesor o investigador</li>
+                                <li><strong>Administrativo:</strong> Personal administrativo</li>
+                                <li><strong>Invitado:</strong> Participante externo</li>
+                            </ul>
+                            
+                            <hr>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Nota:</strong> Los participantes pueden ser agregados a reuniones específicas desde el detalle de cada reunión.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validación de email
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        alert('Por favor ingresa un email válido.');
+        this.focus();
+    }
+});
+
+// Validación de teléfono
+document.getElementById('telefono').addEventListener('blur', function() {
+    const telefono = this.value;
+    const telefonoRegex = /^[\+]?[0-9\s\-\(\)]+$/;
+    if (telefono && !telefonoRegex.test(telefono)) {
+        alert('Por favor ingresa un teléfono válido.');
+        this.focus();
+    }
+});
+</script>
+{% endblock %}

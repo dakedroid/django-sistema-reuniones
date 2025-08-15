@@ -1,0 +1,218 @@
+{% extends 'base_reuniones.html' %}
+
+{% block title %}Lista de Reuniones Nacionales - TecNM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-calendar-alt me-2 text-primary"></i>
+        Reuniones Nacionales
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{% url 'crear_reunion' %}" class="btn btn-tecnm-primary">
+                <i class="fas fa-plus me-1"></i>Nueva Reunión
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card card-tecnm mb-4">
+    <div class="card-header card-header-tecnm">
+        <h5 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filtros de Búsqueda
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="tipo" class="form-label">Tipo de Reunión</label>
+                <select class="form-select" id="tipo" name="tipo">
+                    <option value="">Todos los tipos</option>
+                    {% for codigo, nombre in tipos_reunion %}
+                        <option value="{{ codigo }}" {% if request.GET.tipo == codigo %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" id="estado" name="estado">
+                    <option value="">Todos los estados</option>
+                    {% for codigo, nombre in estados %}
+                        <option value="{{ codigo }}" {% if request.GET.estado == codigo %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="sede" class="form-label">Sede</label>
+                <input type="text" class="form-control" id="sede" name="sede" 
+                       value="{{ request.GET.sede }}" placeholder="Buscar por sede...">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-tecnm-primary">
+                        <i class="fas fa-search me-1"></i>Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Reuniones -->
+<div class="card card-tecnm">
+    <div class="card-header card-header-tecnm d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>
+            Reuniones Nacionales
+        </h5>
+        <span class="badge bg-light text-dark">{{ page_obj.paginator.count }} reuniones</span>
+    </div>
+    <div class="card-body p-0">
+        {% if page_obj %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 table-tecnm">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Sede</th>
+                            <th>Estado</th>
+                            <th>Participantes</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reunion in page_obj %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ reunion.titulo }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ reunion.descripcion|truncatewords:10 }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-tecnm">{{ reunion.get_tipo_display }}</span>
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>{{ reunion.fecha_inicio|date:"d/m/Y" }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ reunion.fecha_inicio|date:"H:i" }} - {{ reunion.fecha_fin|date:"H:i" }}</small>
+                                </div>
+                            </td>
+                                                                    <td>
+                                            {{ reunion.sede }}
+                                            {% if reunion.modalidad == 'VIRTUAL' %}
+                                                <br><small class="text-success"><i class="fas fa-video me-1"></i>Virtual</small>
+                                            {% elif reunion.modalidad == 'HIBRIDA' %}
+                                                <br><small class="text-warning"><i class="fas fa-users me-1"></i>Híbrida</small>
+                                            {% else %}
+                                                <br><small class="text-primary"><i class="fas fa-map-marker-alt me-1"></i>Presencial</small>
+                                            {% endif %}
+                                        </td>
+                            <td>
+                                {% if reunion.estado == 'PLANIFICADA' %}
+                                    <span class="badge bg-secondary">{{ reunion.get_estado_display }}</span>
+                                {% elif reunion.estado == 'EN_CURSO' %}
+                                    <span class="badge bg-warning text-dark">{{ reunion.get_estado_display }}</span>
+                                {% elif reunion.estado == 'FINALIZADA' %}
+                                    <span class="badge bg-success">{{ reunion.get_estado_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ reunion.get_estado_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-users me-1 text-muted"></i>
+                                    {{ reunion.participantes|length }}
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{% url 'detalle_reunion' reunion.id %}" 
+                                   class="btn btn-sm btn-outline-primary" 
+                                   title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No se encontraron reuniones</h5>
+                <p class="text-muted">No hay reuniones que coincidan con los filtros aplicados.</p>
+                <a href="{% url 'lista_reuniones' %}" class="btn btn-tecnm-primary">
+                    <i class="fas fa-refresh me-1"></i>Limpiar Filtros
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Paginación -->
+{% if page_obj.has_other_pages %}
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Navegación de páginas">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.sede %}&sede={{ request.GET.sede }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.sede %}&sede={{ request.GET.sede }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.sede %}&sede={{ request.GET.sede }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.sede %}&sede={{ request.GET.sede }}{% endif %}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.sede %}&sede={{ request.GET.sede }}{% endif %}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+<!-- Información de la página -->
+<div class="text-center mt-3">
+    <small class="text-muted">
+        Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} reuniones
+    </small>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Agregar Participante Existente - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Agregar Participante Existente a: {{ reunion.titulo }}
+                </h2>
+                <div>
+                    <a href="{% url 'detalle_reunion' reunion.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-users me-2"></i>Seleccionar Participante Existente
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if participantes_disponibles %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    
+                                    <div class="mb-3">
+                                        <label for="participante_id" class="form-label">Seleccionar Participante *</label>
+                                        <select class="form-select" id="participante_id" name="participante_id" required>
+                                            <option value="">Seleccionar participante...</option>
+                                            {% for participante in participantes_disponibles %}
+                                            <option value="{{ participante.id }}">
+                                                {{ participante.nombre }} {{ participante.apellido_paterno }} {{ participante.apellido_materno }} - {{ participante.instituto }} ({{ participante.get_tipo_participante_display }})
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" class="btn btn-outline-secondary me-md-2" onclick="history.back()">
+                                            <i class="fas fa-times me-1"></i>Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-tecnm-primary">
+                                            <i class="fas fa-user-plus me-1"></i>Agregar a la Reunión
+                                        </button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay participantes disponibles</h5>
+                                    <p class="text-muted">Todos los participantes ya están agregados a esta reunión o no hay participantes registrados en el sistema.</p>
+                                    <a href="{% url 'crear_participante' %}" class="btn btn-tecnm-primary me-2">
+                                        <i class="fas fa-user-plus me-1"></i>Crear Nuevo Participante
+                                    </a>
+                                    <a href="{% url 'agregar_participante_reunion' reunion.id %}" class="btn btn-tecnm-secondary">
+                                        <i class="fas fa-plus me-1"></i>Agregar Participante Nuevo
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información de la Reunión
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="fas fa-calendar-alt me-2"></i>Datos de la Reunión</h6>
+                            <ul class="list-unstyled small">
+                                <li><strong>Título:</strong> {{ reunion.titulo }}</li>
+                                <li><strong>Tipo:</strong> {{ reunion.get_tipo_display }}</li>
+                                <li><strong>Estado:</strong> {{ reunion.get_estado_display }}</li>
+                                <li><strong>Sede:</strong> {{ reunion.sede }}</li>
+                                <li><strong>Fecha:</strong> {{ reunion.fecha_inicio|date:"d/m/Y" }} - {{ reunion.fecha_fin|date:"d/m/Y" }}</li>
+                            </ul>
+                            
+                            <hr>
+                            
+                            <h6><i class="fas fa-users me-2"></i>Participantes Actuales</h6>
+                            <p class="mb-2"><strong>Total:</strong> {{ reunion.participantes|length }}</p>
+                            <p class="mb-2"><strong>Disponibles para agregar:</strong> {{ participantes_disponibles|length }}</p>
+                            
+                            <hr>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                <strong>Consejo:</strong> Selecciona un participante existente del sistema para agregarlo a esta reunión. Los datos se copiarán automáticamente.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Mostrar información del participante seleccionado
+document.getElementById('participante_id').addEventListener('change', function() {
+    const participanteId = this.value;
+    if (participanteId) {
+        // Aquí podrías hacer una llamada AJAX para obtener más detalles del participante
+        console.log('Participante seleccionado:', participanteId);
+    }
+});
+</script>
+{% endblock %}

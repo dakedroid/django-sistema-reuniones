@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Reuniones Nacionales - TecNM{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --tecnm-azul: #1E3A8A;
+            --tecnm-verde: #16A34A;
+            --tecnm-naranja: #F97316;
+            --tecnm-blanco: #FFFFFF;
+        }
+        
+        .navbar-tecnm {
+            background: linear-gradient(135deg, var(--tecnm-azul) 0%, #1F4E99 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-tecnm .navbar-brand {
+            color: var(--tecnm-blanco) !important;
+            font-weight: bold;
+        }
+        
+        .navbar-tecnm .nav-link {
+            color: var(--tecnm-blanco) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-tecnm .nav-link:hover {
+            color: var(--tecnm-naranja) !important;
+            transform: translateY(-2px);
+        }
+        
+        .btn-tecnm-primary {
+            background-color: var(--tecnm-azul);
+            border-color: var(--tecnm-azul);
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-primary:hover {
+            background-color: #1F4E99;
+            border-color: #1F4E99;
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-success {
+            background-color: var(--tecnm-verde);
+            border-color: var(--tecnm-verde);
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-success:hover {
+            background-color: #22C55E;
+            border-color: #22C55E;
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-warning {
+            background-color: var(--tecnm-naranja);
+            border-color: var(--tecnm-naranja);
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-warning:hover {
+            background-color: #FB923C;
+            border-color: #FB923C;
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-secondary {
+            background-color: #6B7280;
+            border-color: #6B7280;
+            color: var(--tecnm-blanco);
+        }
+        
+        .btn-tecnm-secondary:hover {
+            background-color: #4B5563;
+            border-color: #4B5563;
+            color: var(--tecnm-blanco);
+        }
+        
+        .card-tecnm {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card-tecnm:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .card-header-tecnm {
+            background: linear-gradient(135deg, var(--tecnm-azul) 0%, #1F4E99 100%);
+            color: var(--tecnm-blanco);
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, var(--tecnm-azul) 0%, #1F4E99 100%);
+            min-height: 100vh;
+            color: var(--tecnm-blanco);
+        }
+        
+        .sidebar .nav-link {
+            color: var(--tecnm-blanco);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--tecnm-naranja);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--tecnm-naranja);
+            color: var(--tecnm-blanco);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, var(--tecnm-verde) 0%, #22C55E 100%);
+            color: var(--tecnm-blanco);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .footer-tecnm {
+            background: var(--tecnm-azul);
+            color: var(--tecnm-blanco);
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+        
+        .badge-tecnm {
+            background-color: var(--tecnm-naranja);
+            color: var(--tecnm-blanco);
+        }
+        
+        .table-tecnm {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .table-tecnm thead {
+            background: linear-gradient(135deg, var(--tecnm-azul) 0%, #1F4E99 100%);
+            color: var(--tecnm-blanco);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-tecnm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index_reuniones' %}">
+                <i class="fas fa-users me-2"></i>
+                TecNM - Reuniones Nacionales
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index_reuniones' %}">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_reuniones' %}">
+                            <i class="fas fa-calendar-alt me-1"></i>Reuniones
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_acuerdos' %}">
+                            <i class="fas fa-handshake me-1"></i>Acuerdos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_participantes' %}">
+                            <i class="fas fa-user-friends me-1"></i>Participantes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_documentos' %}">
+                            <i class="fas fa-file-alt me-1"></i>Documentos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'estadisticas' %}">
+                            <i class="fas fa-chart-bar me-1"></i>Estadísticas
+                        </a>
+                    </li>
+
+                </ul>
+                
+                <!-- Buscador -->
+                <form class="d-flex me-3" method="GET" action="{% url 'buscar' %}">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <!-- Usuario -->
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>Usuario
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Contenido Principal -->
+            <main class="col-12 px-md-4">
+                <div class="pt-3 pb-2 mb-3">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-tecnm">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Tecnologico Nacional de México</h5>
+                    <p>Sistema de Gestión de Reuniones Nacionales</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 TecNM. Todos los derechos reservados.</p>
+                    <p>Desarrollado con <i class="fas fa-heart text-danger"></i> para la comunidad TecNM</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

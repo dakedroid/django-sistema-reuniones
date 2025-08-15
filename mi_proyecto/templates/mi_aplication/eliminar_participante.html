@@ -1,0 +1,103 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Eliminar Participante - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-trash me-2"></i>Eliminar Participante
+                </h2>
+                <div>
+                    <a href="{% url 'lista_participantes' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-danger">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i>¡Atención!</h6>
+                                <p class="mb-0">Estás a punto de eliminar al participante <strong>{{ participante.nombre }} {{ participante.apellido_paterno }}</strong>.</p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-user me-2"></i>Información del Participante</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Nombre:</strong> {{ participante.nombre }} {{ participante.apellido_paterno }} {{ participante.apellido_materno }}</li>
+                                        <li><strong>Email:</strong> {{ participante.email }}</li>
+                                        <li><strong>Instituto:</strong> {{ participante.instituto }}</li>
+                                        <li><strong>Tipo:</strong> {{ participante.get_tipo_participante_display }}</li>
+                                        <li><strong>Estado:</strong> 
+                                            {% if participante.confirmado %}
+                                                <span class="badge bg-success">Confirmado</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Pendiente</span>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-calendar me-2"></i>Reuniones Asociadas</h6>
+                                    <p><strong>Total de reuniones:</strong> {{ participante.reuniones|length }}</p>
+                                    
+                                    {% if participante.reuniones %}
+                                    <div class="alert alert-warning">
+                                        <small>
+                                            <strong>Reuniones donde participa:</strong><br>
+                                            {% for reunion in participante.reuniones %}
+                                                • {{ reunion.titulo }}<br>
+                                            {% endfor %}
+                                        </small>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted">No está asociado a ninguna reunión.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-info-circle me-2"></i>Consecuencias de la Eliminación</h6>
+                                <ul class="mb-0">
+                                    <li>El participante será eliminado permanentemente de la base de datos</li>
+                                    <li>Se perderá toda la información asociada al participante</li>
+                                    <li>Esta acción no se puede deshacer</li>
+                                    {% if participante.reuniones %}
+                                    <li>El participante será removido de todas las reuniones asociadas</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{% url 'lista_participantes' %}" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash me-1"></i>Eliminar Participante
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

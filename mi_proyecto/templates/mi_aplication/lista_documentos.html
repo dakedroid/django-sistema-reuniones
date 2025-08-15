@@ -1,0 +1,260 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Documentos - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Documentos
+                </h2>
+                <div>
+                    <a href="{% url 'index_reuniones' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card card-tecnm mb-4">
+                <div class="card-header card-header-tecnm">
+                    <h5 class="mb-0">
+                        <i class="fas fa-filter me-2"></i>Filtros
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo de Documento</label>
+                            <select name="tipo" id="tipo" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="AGENDA" {% if request.GET.tipo == 'AGENDA' %}selected{% endif %}>Agenda</option>
+                                <option value="ACTA" {% if request.GET.tipo == 'ACTA' %}selected{% endif %}>Acta</option>
+                                <option value="PRESENTACION" {% if request.GET.tipo == 'PRESENTACION' %}selected{% endif %}>Presentación</option>
+                                <option value="MEMORANDUM" {% if request.GET.tipo == 'MEMORANDUM' %}selected{% endif %}>Memorándum</option>
+                                <option value="CIRCULAR" {% if request.GET.tipo == 'CIRCULAR' %}selected{% endif %}>Circular</option>
+                                <option value="OTRO" {% if request.GET.tipo == 'OTRO' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="reunion" class="form-label">Reunión</label>
+                            <input type="text" name="reunion" id="reunion" class="form-control" 
+                                   value="{{ request.GET.reunion }}" placeholder="Buscar por reunión...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" name="fecha" id="fecha" class="form-control" 
+                                   value="{{ request.GET.fecha }}">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-tecnm-primary me-2">
+                                <i class="fas fa-search me-1"></i>Filtrar
+                            </button>
+                            <a href="{% url 'lista_documentos' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Limpiar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Documentos -->
+            <div class="card card-tecnm">
+                <div class="card-header card-header-tecnm d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Lista de Documentos
+                    </h5>
+                    <span class="badge bg-primary">{{ page_obj.paginator.count }} documentos</span>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Tipo</th>
+                                        <th>Reunión/Acuerdo</th>
+                                        <th>Subido por</th>
+                                        <th>Fecha</th>
+                                        <th>Tamaño</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for documento in page_obj %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-file-alt fa-2x text-primary me-3"></i>
+                                                <div>
+                                                    <strong>{{ documento.titulo }}</strong><br>
+                                                    <small class="text-muted">{{ documento.descripcion|truncatechars:50 }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ documento.get_tipo_display }}</span>
+                                        </td>
+                                        <td>
+                                            {% if documento.reunion %}
+                                                <a href="{% url 'detalle_reunion' documento.reunion.id %}" class="text-decoration-none">
+                                                    {{ documento.reunion.titulo|truncatechars:30 }}
+                                                </a>
+                                            {% elif documento.acuerdo %}
+                                                <a href="{% url 'detalle_acuerdo' documento.acuerdo.id %}" class="text-decoration-none">
+                                                    {{ documento.acuerdo.titulo|truncatechars:30 }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Sin relación</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ documento.subido_por|default:"Sistema" }}</td>
+                                        <td>
+                                            <small>{{ documento.fecha_subida|date:"d/m/Y H:i" }}</small>
+                                        </td>
+                                        <td>
+                                            {% if documento.tamaño %}
+                                                <small>{{ documento.tamaño|filesizeformat }}</small>
+                                            {% else %}
+                                                <small class="text-muted">N/A</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                {% if documento.url %}
+                                                <a href="{{ documento.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                                {% endif %}
+                                                <button class="btn btn-sm btn-outline-info" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#documentoModal{{ forloop.counter }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Paginación -->
+                        {% if page_obj.has_other_pages %}
+                        <nav aria-label="Paginación de documentos">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.reunion %}&reunion={{ request.GET.reunion }}{% endif %}{% if request.GET.fecha %}&fecha={{ request.GET.fecha }}{% endif %}">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.reunion %}&reunion={{ request.GET.reunion }}{% endif %}{% if request.GET.fecha %}&fecha={{ request.GET.fecha }}{% endif %}">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.reunion %}&reunion={{ request.GET.reunion }}{% endif %}{% if request.GET.fecha %}&fecha={{ request.GET.fecha }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.reunion %}&reunion={{ request.GET.reunion }}{% endif %}{% if request.GET.fecha %}&fecha={{ request.GET.fecha }}{% endif %}">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}{% if request.GET.reunion %}&reunion={{ request.GET.reunion }}{% endif %}{% if request.GET.fecha %}&fecha={{ request.GET.fecha }}{% endif %}">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No se encontraron documentos</h5>
+                            <p class="text-muted">Intenta ajustar los filtros de búsqueda.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales para detalles de documentos -->
+{% for documento in page_obj %}
+<div class="modal fade" id="documentoModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header card-header-tecnm">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-alt me-2"></i>{{ documento.titulo }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-info-circle me-2"></i>Información General</h6>
+                        <p><strong>Tipo:</strong> {{ documento.get_tipo_display }}</p>
+                        <p><strong>Versión:</strong> {{ documento.version|default:"1.0" }}</p>
+                        <p><strong>Formato:</strong> {{ documento.formato|default:"N/A" }}</p>
+                        {% if documento.tamaño %}
+                        <p><strong>Tamaño:</strong> {{ documento.tamaño|filesizeformat }}</p>
+                        {% endif %}
+                        <p><strong>Subido por:</strong> {{ documento.subido_por|default:"Sistema" }}</p>
+                        <p><strong>Fecha:</strong> {{ documento.fecha_subida|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-align-left me-2"></i>Descripción</h6>
+                        <p>{{ documento.descripcion|default:"Sin descripción" }}</p>
+                        
+                        {% if documento.observaciones %}
+                        <h6><i class="fas fa-sticky-note me-2"></i>Observaciones</h6>
+                        <p>{{ documento.observaciones }}</p>
+                        {% endif %}
+                        
+                        {% if documento.reunion or documento.acuerdo %}
+                        <h6><i class="fas fa-link me-2"></i>Relacionado con</h6>
+                        {% if documento.reunion %}
+                        <p><a href="{% url 'detalle_reunion' documento.reunion.id %}">{{ documento.reunion.titulo }}</a></p>
+                        {% elif documento.acuerdo %}
+                        <p><a href="{% url 'detalle_acuerdo' documento.acuerdo.id %}">{{ documento.acuerdo.titulo }}</a></p>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {% if documento.url %}
+                <a href="{{ documento.url }}" class="btn btn-tecnm-primary" target="_blank">
+                    <i class="fas fa-download me-1"></i>Descargar
+                </a>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

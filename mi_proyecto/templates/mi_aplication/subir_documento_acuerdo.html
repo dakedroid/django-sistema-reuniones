@@ -1,0 +1,179 @@
+{% extends "base_reuniones.html" %}
+
+{% load static %}
+{% block title %}Subir Documento - Sistema de Reuniones Nacionales{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-upload me-2"></i>Subir Documento a Acuerdo: {{ acuerdo.titulo }}
+                </h2>
+                <div>
+                    <a href="{% url 'detalle_acuerdo' acuerdo.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-upload me-2"></i>Información del Documento
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="titulo" class="form-label">Título del Documento *</label>
+                                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tipo" class="form-label">Tipo de Documento *</label>
+                                        <select class="form-select" id="tipo" name="tipo" required>
+                                            <option value="">Seleccionar tipo...</option>
+                                            {% for codigo, nombre in tipos_documento %}
+                                            <option value="{{ codigo }}">{{ nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="formato" class="form-label">Formato</label>
+                                        <input type="text" class="form-control" id="formato" name="formato" 
+                                               placeholder="pdf, docx, pptx, etc.">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="version" class="form-label">Versión</label>
+                                        <input type="text" class="form-control" id="version" name="version" 
+                                               value="1.0" placeholder="1.0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tamaño" class="form-label">Tamaño (bytes)</label>
+                                        <input type="number" class="form-control" id="tamaño" name="tamaño" 
+                                               min="0" placeholder="2048576">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="url" class="form-label">URL del Documento</label>
+                                        <input type="url" class="form-control" id="url" name="url" 
+                                               placeholder="https://drive.google.com/file/d/...">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="subido_por" class="form-label">Subido por</label>
+                                        <input type="text" class="form-control" id="subido_por" name="subido_por" 
+                                               value="Sistema" placeholder="Nombre del usuario">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="descripcion" class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
+                                              placeholder="Descripción breve del documento..."></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="observaciones" class="form-label">Observaciones</label>
+                                    <textarea class="form-control" id="observaciones" name="observaciones" rows="2" 
+                                              placeholder="Observaciones adicionales..."></textarea>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-outline-secondary me-md-2" onclick="history.back()">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </button>
+                                    <button type="submit" class="btn btn-tecnm-primary">
+                                        <i class="fas fa-upload me-1"></i>Subir Documento
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información del Acuerdo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="fas fa-file-contract me-2"></i>Datos del Acuerdo</h6>
+                            <ul class="list-unstyled small">
+                                <li><strong>Título:</strong> {{ acuerdo.titulo }}</li>
+                                <li><strong>Categoría:</strong> {{ acuerdo.get_categoria_display }}</li>
+                                <li><strong>Estado:</strong> {{ acuerdo.get_estado_display }}</li>
+                                <li><strong>Responsable:</strong> {{ acuerdo.responsable }}</li>
+                                <li><strong>Fecha límite:</strong> {{ acuerdo.fecha_limite|date:"d/m/Y" }}</li>
+                            </ul>
+                            
+                            <hr>
+                            
+                            <h6><i class="fas fa-file-alt me-2"></i>Documentos Actuales</h6>
+                            <p class="mb-2"><strong>Total:</strong> {{ acuerdo.documentos|length }}</p>
+                            
+                            {% if acuerdo.documentos %}
+                            <div class="list-group list-group-flush">
+                                {% for doc in acuerdo.documentos %}
+                                <div class="list-group-item p-2">
+                                    <small><strong>{{ doc.titulo }}</strong></small><br>
+                                    <small class="text-muted">{{ doc.get_tipo_display }} - {{ doc.subido_por }}</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted small">No hay documentos subidos aún.</p>
+                            {% endif %}
+                            
+                            <hr>
+                            
+                            <h6><i class="fas fa-clock me-2"></i>Seguimientos</h6>
+                            <p class="mb-2"><strong>Total:</strong> {{ acuerdo.seguimientos|length }}</p>
+                            
+                            <hr>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                <strong>Consejo:</strong> Los documentos pueden incluir evidencia de cumplimiento, reportes de progreso, o cualquier material relacionado con el acuerdo.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validación de tamaño
+document.getElementById('tamaño').addEventListener('input', function() {
+    if (this.value < 0) {
+        this.value = 0;
+    }
+});
+
+// Validación de URL
+document.getElementById('url').addEventListener('blur', function() {
+    const url = this.value;
+    if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('La URL debe comenzar con http:// o https://');
+        this.focus();
+    }
+});
+</script>
+{% endblock %}
