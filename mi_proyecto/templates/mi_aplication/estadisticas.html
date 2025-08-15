@@ -120,7 +120,7 @@
                 </div>
 
                 <!-- Gráfico de Participantes por Tipo -->
-                <div class="col-md-12 mb-4">
+                <div class="col-md-6 mb-4">
                     <div class="card card-tecnm">
                         <div class="card-header card-header-tecnm">
                             <h5 class="mb-0">
@@ -129,6 +129,88 @@
                         </div>
                         <div class="card-body">
                             <canvas id="participantesTipoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Reuniones por Modalidad -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Reuniones por Modalidad
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="reunionesModalidadChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Acuerdos por Prioridad -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Acuerdos por Prioridad
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="acuerdosPrioridadChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Documentos por Tipo -->
+                <div class="col-md-6 mb-4">
+                    <div class="card card-tecnm">
+                        <div class="card-header card-header-tecnm">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-doughnut me-2"></i>Documentos por Tipo
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="documentosTipoChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicadores adicionales -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-4">
+                    <div class="card card-tecnm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h3 class="card-title">{{ participantes_confirmados|default:0 }}</h3>
+                            <p class="card-text">Participantes Confirmados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card card-tecnm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                            <h3 class="card-title">{{ participantes_pendientes|default:0 }}</h3>
+                            <p class="card-text">Participantes Pendientes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card card-tecnm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-day fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title">{{ reuniones_recientes|default:0 }}</h3>
+                            <p class="card-text">Reuniones Recientes (30 días)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card card-tecnm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                            <h3 class="card-title">{{ acuerdos_vencidos|default:0 }}</h3>
+                            <p class="card-text">Acuerdos Vencidos</p>
                         </div>
                     </div>
                 </div>
@@ -358,6 +440,81 @@ new Chart(participantesTipoCtx, {
         plugins: {
             legend: {
                 display: false
+            }
+        }
+    }
+});
+
+// Gráfico de Reuniones por Modalidad
+const reunionesModalidadCtx = document.getElementById('reunionesModalidadChart').getContext('2d');
+new Chart(reunionesModalidadCtx, {
+    type: 'pie',
+    data: {
+        labels: [{% for modalidad, cantidad in reuniones_por_modalidad.items %}'{{ modalidad }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for modalidad, cantidad in reuniones_por_modalidad.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ reuniones_por_modalidad|length }}),
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Gráfico de Acuerdos por Prioridad
+const acuerdosPrioridadCtx = document.getElementById('acuerdosPrioridadChart').getContext('2d');
+new Chart(acuerdosPrioridadCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for prioridad, cantidad in acuerdos_por_prioridad.items %}'{{ prioridad }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Cantidad',
+            data: [{% for prioridad, cantidad in acuerdos_por_prioridad.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ acuerdos_por_prioridad|length }}),
+            borderColor: colors.slice(0, {{ acuerdos_por_prioridad|length }}),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Gráfico de Documentos por Tipo
+const documentosTipoCtx = document.getElementById('documentosTipoChart').getContext('2d');
+new Chart(documentosTipoCtx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for tipo, cantidad in documentos_por_tipo.items %}'{{ tipo }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for tipo, cantidad in documentos_por_tipo.items %}{{ cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: colors.slice(0, {{ documentos_por_tipo|length }}),
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
             }
         }
     }

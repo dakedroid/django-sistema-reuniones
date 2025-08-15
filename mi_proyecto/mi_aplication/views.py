@@ -717,20 +717,28 @@ def estadisticas(request):
     # Estadísticas de reuniones
     reuniones_por_tipo = {}
     for tipo in ReunionNacional.TIPOS_REUNION:
-        reuniones_por_tipo[tipo[1]] = ReunionNacional.objects.filter(tipo=tipo[0]).count()
+        count = ReunionNacional.objects.filter(tipo=tipo[0]).count()
+        if count > 0:  # Solo mostrar tipos con datos
+            reuniones_por_tipo[tipo[1]] = count
     
     reuniones_por_estado = {}
     for estado in ReunionNacional.ESTADOS:
-        reuniones_por_estado[estado[1]] = ReunionNacional.objects.filter(estado=estado[0]).count()
+        count = ReunionNacional.objects.filter(estado=estado[0]).count()
+        if count > 0:  # Solo mostrar estados con datos
+            reuniones_por_estado[estado[1]] = count
     
     # Estadísticas de acuerdos
     acuerdos_por_categoria = {}
     for categoria in Acuerdo.CATEGORIAS:
-        acuerdos_por_categoria[categoria[1]] = Acuerdo.objects.filter(categoria=categoria[0]).count()
+        count = Acuerdo.objects.filter(categoria=categoria[0]).count()
+        if count > 0:  # Solo mostrar categorías con datos
+            acuerdos_por_categoria[categoria[1]] = count
     
     acuerdos_por_estado = {}
     for estado in Acuerdo.ESTADOS_ACUERDO:
-        acuerdos_por_estado[estado[1]] = Acuerdo.objects.filter(estado=estado[0]).count()
+        count = Acuerdo.objects.filter(estado=estado[0]).count()
+        if count > 0:  # Solo mostrar estados con datos
+            acuerdos_por_estado[estado[1]] = count
     
     # Estadísticas de participantes
     participantes_por_tipo = {}
@@ -743,7 +751,55 @@ def estadisticas(request):
         ('INVITADO', 'Invitado'),
     ]
     for tipo in tipos_participante:
-        participantes_por_tipo[tipo[1]] = Participante.objects.filter(tipo_participante=tipo[0]).count()
+        count = Participante.objects.filter(tipo_participante=tipo[0]).count()
+        if count > 0:  # Solo mostrar tipos con datos
+            participantes_por_tipo[tipo[1]] = count
+    
+    # Estadísticas adicionales
+    participantes_confirmados = Participante.objects.filter(confirmado=True).count()
+    participantes_pendientes = total_participantes - participantes_confirmados
+    
+    # Reuniones por modalidad
+    reuniones_por_modalidad = {}
+    for modalidad in ReunionNacional.MODALIDADES:
+        count = ReunionNacional.objects.filter(modalidad=modalidad[0]).count()
+        if count > 0:
+            reuniones_por_modalidad[modalidad[1]] = count
+    
+    # Acuerdos por prioridad
+    acuerdos_por_prioridad = {}
+    prioridades = [
+        ('BAJA', 'Baja'),
+        ('MEDIA', 'Media'),
+        ('ALTA', 'Alta'),
+        ('CRITICA', 'Crítica'),
+    ]
+    for prioridad in prioridades:
+        count = Acuerdo.objects.filter(prioridad=prioridad[0]).count()
+        if count > 0:
+            acuerdos_por_prioridad[prioridad[1]] = count
+    
+    # Documentos por tipo
+    documentos_por_tipo = {}
+    tipos_documento = [
+        ('AGENDA', 'Agenda'),
+        ('ACTA', 'Acta'),
+        ('PRESENTACION', 'Presentación'),
+        ('MEMORANDUM', 'Memorándum'),
+        ('CIRCULAR', 'Circular'),
+    ]
+    for tipo in tipos_documento:
+        count = Documento.objects.filter(tipo=tipo[0]).count()
+        if count > 0:
+            documentos_por_tipo[tipo[1]] = count
+    
+    # Reuniones recientes (últimos 30 días)
+    from datetime import datetime, timedelta
+    fecha_limite = datetime.now() - timedelta(days=30)
+    reuniones_recientes = ReunionNacional.objects.filter(fecha_inicio__gte=fecha_limite).count()
+    
+    # Acuerdos vencidos
+    acuerdos_vencidos = Acuerdo.objects.filter(fecha_limite__lt=datetime.now(), estado__in=['PENDIENTE', 'EN_PROCESO']).count()
     
     context = {
         'total_reuniones': total_reuniones,
@@ -752,9 +808,16 @@ def estadisticas(request):
         'total_documentos': total_documentos,
         'reuniones_por_tipo': reuniones_por_tipo,
         'reuniones_por_estado': reuniones_por_estado,
+        'reuniones_por_modalidad': reuniones_por_modalidad,
         'acuerdos_por_categoria': acuerdos_por_categoria,
         'acuerdos_por_estado': acuerdos_por_estado,
+        'acuerdos_por_prioridad': acuerdos_por_prioridad,
         'participantes_por_tipo': participantes_por_tipo,
+        'documentos_por_tipo': documentos_por_tipo,
+        'participantes_confirmados': participantes_confirmados,
+        'participantes_pendientes': participantes_pendientes,
+        'reuniones_recientes': reuniones_recientes,
+        'acuerdos_vencidos': acuerdos_vencidos,
     }
     
     return render(request, 'mi_aplication/estadisticas.html', context)
