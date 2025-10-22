@@ -3,19 +3,19 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import datetime, timedelta
 
+# Importar constantes centralizadas
+from .constants import (
+    TIPOS_DOCUMENTO, TIPOS_PARTICIPANTE, TIPOS_ACTIVIDAD, TIPOS_REUNION,
+    ESTADOS_REUNION, MODALIDADES_REUNION, CATEGORIAS_ACUERDO, 
+    ESTADOS_ACUERDO, PRIORIDADES, get_choice_display
+)
+
 # Modelos embebidos (nested objects)
 class DocumentoEmbebido(EmbeddedDocument):
     """Documento embebido dentro de otros modelos"""
     titulo = StringField(required=True, max_length=200)
     descripcion = StringField()
-    tipo = StringField(max_length=20, choices=[
-        ('AGENDA', 'Agenda'),
-        ('ACTA', 'Acta'),
-        ('PRESENTACION', 'Presentación'),
-        ('MEMORANDUM', 'Memorándum'),
-        ('CIRCULAR', 'Circular'),
-        ('OTRO', 'Otro'),
-    ])
+    tipo = StringField(max_length=20, choices=TIPOS_DOCUMENTO)
     url = URLField()
     formato = StringField(max_length=10)  # pdf, docx, pptx, etc.
     tamaño = IntField()  # en bytes
@@ -33,16 +33,7 @@ class ParticipanteEmbebido(EmbeddedDocument):
     telefono = StringField(max_length=20)
     instituto = StringField(required=True, max_length=200)
     departamento = StringField(max_length=100)
-    tipo_participante = StringField(max_length=20, choices=[
-        ('DIRECTOR', 'Director'),
-        ('SUBDIRECTOR', 'Subdirector'),
-        ('COORDINADOR', 'Coordinador'),
-        ('DOCENTE', 'Docente'),
-        ('ADMINISTRATIVO', 'Administrativo'),
-        ('Docente TecNM', 'Docente TecNM'),
-        ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
-        ('INVITADO', 'Invitado'),
-    ])
+    tipo_participante = StringField(max_length=20, choices=TIPOS_PARTICIPANTE)
     confirmado = BooleanField(default=False)
     fecha_confirmacion = DateTimeField()
     observaciones = StringField()
@@ -64,47 +55,25 @@ class AgendaEmbebido(EmbeddedDocument):
     hora_inicio = StringField(max_length=10)  # formato HH:MM
     hora_fin = StringField(max_length=10)     # formato HH:MM
     responsable = StringField(max_length=100)
-    tipo_actividad = StringField(max_length=20, choices=[
-        ('PRESENTACION', 'Presentación'),
-        ('DISCUSION', 'Discusión'),
-        ('TRABAJO_GRUPO', 'Trabajo en Grupo'),
-        ('RECESO', 'Receso'),
-        ('OTRO', 'Otro'),
-    ])
+    tipo_actividad = StringField(max_length=20, choices=TIPOS_ACTIVIDAD)
     documentos = ListField(EmbeddedDocumentField(DocumentoEmbebido))
 
 # Modelos principales
 class ReunionNacional(Document):
     """Modelo para las Reuniones Nacionales del TecNM"""
     
-    TIPOS_REUNION = [
-        ('RNSA', 'Reunión Nacional de Subdirectores Académicos'),
-        ('RNPD', 'Reunión Nacional de Posgrado y Desarrollo'),
-        ('RNVE', 'Reunión Nacional de Vinculación y Extensión'),
-        ('RNCA', 'Reunión Nacional de Calidad y Acreditación'),
-        ('OTRA', 'Otra Reunión Nacional'),
-    ]
-    
-    ESTADOS = [
-        ('PLANIFICADA', 'Planificada'),
-        ('EN_CURSO', 'En Curso'),
-        ('FINALIZADA', 'Finalizada'),
-        ('CANCELADA', 'Cancelada'),
-    ]
-    
-    MODALIDADES = [
-        ('PRESENCIAL', 'Presencial'),
-        ('VIRTUAL', 'Virtual'),
-        ('HIBRIDA', 'Híbrida'),
-    ]
+    # Usar constantes centralizadas
+    TIPOS_REUNION = TIPOS_REUNION
+    ESTADOS = ESTADOS_REUNION
+    MODALIDADES = MODALIDADES_REUNION
     
     titulo = StringField(max_length=200, required=True)
     tipo = StringField(max_length=10, choices=TIPOS_REUNION, required=True)
     fecha_inicio = DateTimeField(required=True)
     fecha_fin = DateTimeField(required=True)
     sede = StringField(max_length=200, required=True)
-    estado = StringField(max_length=15, choices=ESTADOS, default='PLANIFICADA')
-    modalidad = StringField(max_length=15, choices=MODALIDADES, default='PRESENCIAL')
+    estado = StringField(max_length=15, choices=ESTADOS_REUNION, default='PLANIFICADA')
+    modalidad = StringField(max_length=15, choices=MODALIDADES_REUNION, default='PRESENCIAL')
     enlace_videollamada = URLField(null=True, blank=True)
     direccion_fisica = StringField(max_length=500, null=True, blank=True)
     descripcion = StringField(required=True)
@@ -130,13 +99,13 @@ class ReunionNacional(Document):
         return f"{self.titulo} - {self.get_tipo_display()} ({self.fecha_inicio.strftime('%Y-%m-%d')})"
     
     def get_tipo_display(self):
-        return dict(self.TIPOS_REUNION).get(self.tipo, self.tipo)
+        return get_choice_display(TIPOS_REUNION, self.tipo)
     
     def get_estado_display(self):
-        return dict(self.ESTADOS).get(self.estado, self.estado)
+        return get_choice_display(ESTADOS_REUNION, self.estado)
     
     def get_modalidad_display(self):
-        return dict(self.MODALIDADES).get(self.modalidad, self.modalidad)
+        return get_choice_display(MODALIDADES_REUNION, self.modalidad)
     
     def participantes_confirmados_count(self):
         return len([p for p in self.participantes if p.confirmado])
@@ -145,36 +114,18 @@ class ReunionNacional(Document):
         return Acuerdo.objects.filter(reunion=self).count()
 
 class Acuerdo(Document):
-    """Modelo para los Acuerdos de las Reuniones Nacionales"""
+    """Modelo para los acuerdos generados en las reuniones"""
     
-    CATEGORIAS = [
-        ('ACADEMICA', 'Académica'),
-        ('ADMINISTRATIVA', 'Administrativa'),
-        ('FINANCIERA', 'Financiera'),
-        ('INFRAESTRUCTURA', 'Infraestructura'),
-        ('VINCULACION', 'Vinculación'),
-        ('INVESTIGACION', 'Investigación'),
-        ('OTRA', 'Otra'),
-    ]
-    
-    ESTADOS_ACUERDO = [
-        ('PENDIENTE', 'Pendiente'),
-        ('EN_PROCESO', 'En Proceso'),
-        ('COMPLETADO', 'Completado'),
-        ('CANCELADO', 'Cancelado'),
-        ('SUSPENDIDO', 'Suspendido'),
-    ]
+    # Usar constantes centralizadas
+    CATEGORIAS = CATEGORIAS_ACUERDO
+    ESTADOS_ACUERDO = ESTADOS_ACUERDO
+    PRIORIDADES = PRIORIDADES
     
     titulo = StringField(max_length=200, required=True)
     descripcion = StringField(required=True)
-    categoria = StringField(max_length=20, choices=CATEGORIAS, required=True)
+    categoria = StringField(max_length=20, choices=CATEGORIAS_ACUERDO, required=True)
     estado = StringField(max_length=20, choices=ESTADOS_ACUERDO, default='PENDIENTE')
-    prioridad = StringField(max_length=10, choices=[
-        ('BAJA', 'Baja'),
-        ('MEDIA', 'Media'),
-        ('ALTA', 'Alta'),
-        ('CRITICA', 'Crítica'),
-    ], default='MEDIA')
+    prioridad = StringField(max_length=10, choices=PRIORIDADES, default='MEDIA')
     
     # Referencias
     reunion = ReferenceField(ReunionNacional, required=True)
@@ -199,18 +150,13 @@ class Acuerdo(Document):
         return f"{self.titulo} - {self.get_categoria_display()}"
     
     def get_categoria_display(self):
-        return dict(self.CATEGORIAS).get(self.categoria, self.categoria)
+        return get_choice_display(CATEGORIAS_ACUERDO, self.categoria)
     
     def get_estado_display(self):
-        return dict(self.ESTADOS_ACUERDO).get(self.estado, self.estado)
+        return get_choice_display(ESTADOS_ACUERDO, self.estado)
     
     def get_prioridad_display(self):
-        return dict([
-            ('BAJA', 'Baja'),
-            ('MEDIA', 'Media'),
-            ('ALTA', 'Alta'),
-            ('CRITICA', 'Crítica'),
-        ]).get(self.prioridad, self.prioridad)
+        return get_choice_display(PRIORIDADES, self.prioridad)
     
     def ultimo_seguimiento(self):
         if self.seguimientos:
@@ -228,16 +174,7 @@ class Participante(Document):
     telefono = StringField(max_length=20)
     instituto = StringField(required=True, max_length=200)
     departamento = StringField(max_length=100)
-    tipo_participante = StringField(max_length=20, choices=[
-        ('DIRECTOR', 'Director'),
-        ('SUBDIRECTOR', 'Subdirector'),
-        ('COORDINADOR', 'Coordinador'),
-        ('DOCENTE', 'Docente'),
-        ('ADMINISTRATIVO', 'Administrativo'),
-        ('Docente TecNM', 'Docente TecNM'),
-        ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
-        ('INVITADO', 'Invitado'),
-    ])
+    tipo_participante = StringField(max_length=20, choices=TIPOS_PARTICIPANTE)
     confirmado = BooleanField(default=False)
     fecha_confirmacion = DateTimeField()
     observaciones = StringField()
@@ -255,30 +192,14 @@ class Participante(Document):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
     
     def get_tipo_participante_display(self):
-        return dict([
-            ('DIRECTOR', 'Director'),
-            ('SUBDIRECTOR', 'Subdirector'),
-            ('COORDINADOR', 'Coordinador'),
-            ('DOCENTE', 'Docente'),
-            ('ADMINISTRATIVO', 'Administrativo'),
-            ('Docente TecNM', 'Docente TecNM'),
-            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
-            ('INVITADO', 'Invitado'),
-        ]).get(self.tipo_participante, self.tipo_participante)
+        return get_choice_display(TIPOS_PARTICIPANTE, self.tipo_participante)
 
 class Documento(Document):
     """Modelo independiente para documentos (cuando se necesita acceso directo)"""
     
     titulo = StringField(required=True, max_length=200)
     descripcion = StringField()
-    tipo = StringField(max_length=20, choices=[
-        ('AGENDA', 'Agenda'),
-        ('ACTA', 'Acta'),
-        ('PRESENTACION', 'Presentación'),
-        ('MEMORANDUM', 'Memorándum'),
-        ('CIRCULAR', 'Circular'),
-        ('OTRO', 'Otro'),
-    ])
+    tipo = StringField(max_length=20, choices=TIPOS_DOCUMENTO)
     url = URLField()
     formato = StringField(max_length=10)
     tamaño = IntField()
@@ -301,11 +222,4 @@ class Documento(Document):
         return f"{self.titulo} - {self.get_tipo_display()}"
     
     def get_tipo_display(self):
-        return dict([
-            ('AGENDA', 'Agenda'),
-            ('ACTA', 'Acta'),
-            ('PRESENTACION', 'Presentación'),
-            ('MEMORANDUM', 'Memorándum'),
-            ('CIRCULAR', 'Circular'),
-            ('OTRO', 'Otro'),
-        ]).get(self.tipo, self.tipo)
+        return get_choice_display(TIPOS_DOCUMENTO, self.tipo)

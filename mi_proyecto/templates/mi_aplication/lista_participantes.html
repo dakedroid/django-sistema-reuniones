@@ -31,12 +31,9 @@
                             <label for="tipo" class="form-label">Tipo de Participante</label>
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="">Todos</option>
-                                <option value="DIRECTOR" {% if request.GET.tipo == 'DIRECTOR' %}selected{% endif %}>Director</option>
-                                <option value="SUBDIRECTOR" {% if request.GET.tipo == 'SUBDIRECTOR' %}selected{% endif %}>Subdirector</option>
-                                <option value="COORDINADOR" {% if request.GET.tipo == 'COORDINADOR' %}selected{% endif %}>Coordinador</option>
-                                <option value="DOCENTE" {% if request.GET.tipo == 'DOCENTE' %}selected{% endif %}>Docente</option>
-                                <option value="ADMINISTRATIVO" {% if request.GET.tipo == 'ADMINISTRATIVO' %}selected{% endif %}>Administrativo</option>
-                                <option value="INVITADO" {% if request.GET.tipo == 'INVITADO' %}selected{% endif %}>Invitado</option>
+                                {% for valor, etiqueta in tipos_participante %}
+                                <option value="{{ valor }}" {% if request.GET.tipo == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-3">

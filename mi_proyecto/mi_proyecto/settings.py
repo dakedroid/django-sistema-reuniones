@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# En producción, usar variables de entorno: os.getenv('SECRET_KEY')
 SECRET_KEY = 'django-insecure-msiwm%#p0*=#%l97epip--5%)5ehik1ozulfq1u74t=i3ex#7e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# En producción: DEBUG = False
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# En producción: ALLOWED_HOSTS = ['tu-dominio.com', 'www.tu-dominio.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -70,24 +73,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# ===== CONFIGURACIÓN DE BASES DE DATOS =====
 
 # Configuración para MongoDB usando mongoengine
 import mongoengine
 
-# Conectar a MongoDB
-mongoengine.connect(
-    db='tecnm_reuniones',
-    host='127.0.0.1',
-    port=27017,
-    username='admin',
-    password='admin12345',
-    authentication_source='admin',
-    authentication_mechanism='SCRAM-SHA-1'
-)
+# MongoDB - Base de datos principal del sistema
+# En producción, usar variables de entorno para credenciales
+MONGODB_SETTINGS = {
+    'db': 'tecnm_reuniones',
+    'host': '127.0.0.1',
+    'port': 27017,
+    'username': 'admin',
+    'password': 'admin12345',
+    'authentication_source': 'admin',
+    'authentication_mechanism': 'SCRAM-SHA-1',
+    # Para producción, agregar:
+    # 'ssl': True,
+    # 'ssl_cert_reqs': ssl.CERT_NONE
+}
 
-# Configuración de Django (usando SQLite para compatibilidad)
+# Conectar a MongoDB
+mongoengine.connect(**MONGODB_SETTINGS)
+
+# Django Database (SQLite para compatibilidad con admin y auth)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -115,16 +124,21 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# ===== INTERNACIONALIZACIÓN =====
+# Configuración para México (TecNM)
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'  # Español de México
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'  # Zona horaria de México
 
 USE_I18N = True
 
 USE_TZ = True
+
+# Formato de fecha y hora para México
+DATE_FORMAT = 'd/m/Y'
+TIME_FORMAT = 'H:i'
+DATETIME_FORMAT = 'd/m/Y H:i'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -140,3 +154,61 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # carpeta donde se copiará
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ===== CONFIGURACIONES ADICIONALES DEL SISTEMA =====
+
+# Configuración de logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/reuniones.log',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'mi_aplication': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+# Configuración de archivos subidos
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+FILE_UPLOAD_PERMISSIONS = 0o644
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Configuración de sesiones
+SESSION_COOKIE_AGE = 3600  # 1 hora
+SESSION_COOKIE_SECURE = False  # En producción: True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Configuración de mensajes
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
+# Configuraciones específicas del sistema TecNM
+TECNM_SETTINGS = {
+    'SISTEMA_NOMBRE': 'Sistema de Reuniones Nacionales TecNM',
+    'VERSION': '1.0.0',
+    'MAX_PARTICIPANTES_POR_REUNION': 1000,
+    'MAX_DOCUMENTOS_POR_REUNION': 50,
+    'FORMATOS_DOCUMENTO_PERMITIDOS': ['pdf', 'docx', 'pptx', 'xlsx'],
+    'TAMAÑO_MAXIMO_ARCHIVO_MB': 100,
+}
