@@ -39,6 +39,8 @@ class ParticipanteEmbebido(EmbeddedDocument):
         ('COORDINADOR', 'Coordinador'),
         ('DOCENTE', 'Docente'),
         ('ADMINISTRATIVO', 'Administrativo'),
+        ('Docente TecNM', 'Docente TecNM'),
+        ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
         ('INVITADO', 'Invitado'),
     ])
     confirmado = BooleanField(default=False)
@@ -232,6 +234,8 @@ class Participante(Document):
         ('COORDINADOR', 'Coordinador'),
         ('DOCENTE', 'Docente'),
         ('ADMINISTRATIVO', 'Administrativo'),
+        ('Docente TecNM', 'Docente TecNM'),
+        ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
         ('INVITADO', 'Invitado'),
     ])
     confirmado = BooleanField(default=False)
@@ -257,6 +261,8 @@ class Participante(Document):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]).get(self.tipo_participante, self.tipo_participante)
 

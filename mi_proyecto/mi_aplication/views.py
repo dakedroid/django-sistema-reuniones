@@ -259,13 +259,16 @@ def subir_documento_reunion(request, reunion_id):
     if request.method == 'POST':
         try:
             # Crear documento embebido
+            tamaño_str = request.POST.get('tamaño', '0')
+            tamaño = int(tamaño_str) if tamaño_str and tamaño_str.strip() else 0
+            
             documento = DocumentoEmbebido(
                 titulo=request.POST.get('titulo'),
                 descripcion=request.POST.get('descripcion', ''),
                 tipo=request.POST.get('tipo'),
                 url=request.POST.get('url', ''),
                 formato=request.POST.get('formato', ''),
-                tamaño=int(request.POST.get('tamaño', 0)),
+                tamaño=tamaño,
                 version=request.POST.get('version', '1.0'),
                 subido_por=request.POST.get('subido_por', 'Sistema'),
                 observaciones=request.POST.get('observaciones', '')
@@ -338,6 +341,8 @@ def agregar_participante_reunion(request, reunion_id):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]
     }
@@ -402,6 +407,8 @@ def agregar_participante_existente_reunion(request, reunion_id):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]
     }
@@ -467,13 +474,16 @@ def subir_documento_acuerdo(request, acuerdo_id):
     if request.method == 'POST':
         try:
             # Crear documento embebido
+            tamaño_str = request.POST.get('tamaño', '0')
+            tamaño = int(tamaño_str) if tamaño_str and tamaño_str.strip() else 0
+            
             documento = DocumentoEmbebido(
                 titulo=request.POST.get('titulo'),
                 descripcion=request.POST.get('descripcion', ''),
                 tipo=request.POST.get('tipo'),
                 url=request.POST.get('url', ''),
                 formato=request.POST.get('formato', ''),
-                tamaño=int(request.POST.get('tamaño', 0)),
+                tamaño=tamaño,
                 version=request.POST.get('version', '1.0'),
                 subido_por=request.POST.get('subido_por', 'Sistema'),
                 observaciones=request.POST.get('observaciones', '')
@@ -535,6 +545,8 @@ def lista_participantes(request):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]
     }
@@ -573,6 +585,8 @@ def crear_participante(request):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]
     }
@@ -618,6 +632,8 @@ def editar_participante(request, participante_id):
             ('COORDINADOR', 'Coordinador'),
             ('DOCENTE', 'Docente'),
             ('ADMINISTRATIVO', 'Administrativo'),
+            ('Docente TecNM', 'Docente TecNM'),
+            ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
             ('INVITADO', 'Invitado'),
         ]
     }
@@ -748,6 +764,8 @@ def estadisticas(request):
         ('COORDINADOR', 'Coordinador'),
         ('DOCENTE', 'Docente'),
         ('ADMINISTRATIVO', 'Administrativo'),
+        ('Docente TecNM', 'Docente TecNM'),
+        ('Matemáticas y Ciencias Básicas', 'Matemáticas y Ciencias Básicas'),
         ('INVITADO', 'Invitado'),
     ]
     for tipo in tipos_participante:
