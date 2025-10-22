@@ -36,6 +36,10 @@ urlpatterns = [
     path('estadisticas/', views.estadisticas, name='estadisticas'),
     path('buscar/', views.buscar, name='buscar'),
     
+    # Dashboard de capacitaciones
+    path('capacitaciones/', views.dashboard_capacitaciones, name='dashboard_capacitaciones'),
+    path('api/estadisticas-capacitacion/', views.estadisticas_capacitacion_api, name='api_estadisticas_capacitacion'),
+    
     # Administración de constantes
     path('admin/constantes/', views_admin.admin_constantes, name='admin_constantes'),
     path('admin/constantes/editar/<str:categoria>/', views_admin.editar_constante, name='editar_constante'),

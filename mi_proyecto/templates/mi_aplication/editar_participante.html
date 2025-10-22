@@ -61,16 +61,114 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="instituto" class="form-label">Instituto *</label>
-                                        <input type="text" class="form-control" id="instituto" name="instituto" 
-                                               value="{{ participante.instituto }}" required>
+                                <!-- Datos de Identificación -->
+                                <div class="card mb-3" style="border-left: 4px solid #e74c3c;">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-id-card me-2"></i>Datos de Identificación
+                                        </h6>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="departamento" class="form-label">Departamento</label>
-                                        <input type="text" class="form-control" id="departamento" name="departamento" 
-                                               value="{{ participante.departamento|default:'' }}" placeholder="Departamento o área">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="rfc" class="form-label">RFC</label>
+                                                <input type="text" class="form-control" id="rfc" name="rfc" 
+                                                       value="{{ participante.rfc|default:'' }}" 
+                                                       placeholder="XAXX010101000" maxlength="13">
+                                                <small class="form-text text-muted">13 caracteres</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="curp" class="form-label">CURP</label>
+                                                <input type="text" class="form-control" id="curp" name="curp" 
+                                                       value="{{ participante.curp|default:'' }}" 
+                                                       placeholder="XAXX010101HDFXXX00" maxlength="18">
+                                                <small class="form-text text-muted">18 caracteres</small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="sexo" class="form-label">Sexo</label>
+                                                <select class="form-select" id="sexo" name="sexo">
+                                                    <option value="">Seleccionar...</option>
+                                                    {% for codigo, nombre in sexos %}
+                                                    <option value="{{ codigo }}" {% if participante.sexo == codigo %}selected{% endif %}>{{ nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="edad" class="form-label">Edad</label>
+                                                <input type="number" class="form-control" id="edad" name="edad" 
+                                                       value="{{ participante.edad|default:'' }}" 
+                                                       min="18" max="100" placeholder="Edad">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Datos Institucionales -->
+                                <div class="card mb-3" style="border-left: 4px solid #9b59b6;">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-building me-2"></i>Datos Institucionales
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="plantel_tecnm" class="form-label">Plantel TecNM *</label>
+                                                <select class="form-select" id="plantel_tecnm" name="plantel_tecnm" required>
+                                                    <option value="">Seleccionar plantel...</option>
+                                                    {% for codigo, nombre in planteles_tecnm %}
+                                                    <option value="{{ codigo }}" {% if participante.plantel_tecnm == codigo %}selected{% endif %}>{{ nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="area_departamento" class="form-label">Área/Departamento</label>
+                                                <select class="form-select" id="area_departamento" name="area_departamento">
+                                                    <option value="">Seleccionar área...</option>
+                                                    {% for codigo, nombre in areas_departamento %}
+                                                    <option value="{{ codigo }}" {% if participante.area_departamento == codigo %}selected{% endif %}>{{ nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="puesto" class="form-label">Puesto</label>
+                                                <input type="text" class="form-control" id="puesto" name="puesto" 
+                                                       value="{{ participante.puesto|default:'' }}" 
+                                                       placeholder="Ej: Profesor de Tiempo Completo">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="director" class="form-label">Director</label>
+                                                <input type="text" class="form-control" id="director" name="director" 
+                                                       value="{{ participante.director|default:'' }}" 
+                                                       placeholder="Nombre del director">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="correo_direccion" class="form-label">Correo de Dirección</label>
+                                                <input type="email" class="form-control" id="correo_direccion" name="correo_direccion" 
+                                                       value="{{ participante.correo_direccion|default:'' }}" 
+                                                       placeholder="direccion@tecnm.mx">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="jefe_inmediato" class="form-label">Jefe Inmediato</label>
+                                                <input type="text" class="form-control" id="jefe_inmediato" name="jefe_inmediato" 
+                                                       value="{{ participante.jefe_inmediato|default:'' }}" 
+                                                       placeholder="Nombre del jefe inmediato">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="correo_jefe_inmediato" class="form-label">Correo Jefe Inmediato</label>
+                                                <input type="email" class="form-control" id="correo_jefe_inmediato" name="correo_jefe_inmediato" 
+                                                       value="{{ participante.correo_jefe_inmediato|default:'' }}" 
+                                                       placeholder="jefe@tecnm.mx">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -92,6 +190,38 @@
                                             <label class="form-check-label" for="confirmado">
                                                 Confirmado para asistir
                                             </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Campos de Capacitación -->
+                                <div class="card mb-3" style="border-left: 4px solid #3498db;">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-graduation-cap me-2"></i>Información de Capacitación
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="categoria_formativa" class="form-label">Categoría Formativa</label>
+                                                <select class="form-select" id="categoria_formativa" name="categoria_formativa">
+                                                    <option value="">Seleccionar categoría...</option>
+                                                    {% for codigo, nombre in categorias_formativas %}
+                                                    <option value="{{ codigo }}" {% if participante.categoria_formativa == codigo %}selected{% endif %}>{{ nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <small class="form-text text-muted">Selecciona la categoría formativa del participante</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="cursos_especificos" class="form-label">Cursos Específicos</label>
+                                                <select class="form-select" id="cursos_especificos" name="cursos_especificos" multiple size="5">
+                                                    {% for codigo, nombre in cursos_especificos %}
+                                                    <option value="{{ codigo }}" {% if codigo in participante.cursos_especificos %}selected{% endif %}>{{ nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <small class="form-text text-muted">Mantén presionado Ctrl/Cmd para seleccionar múltiples cursos</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

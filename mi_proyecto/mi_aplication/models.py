@@ -7,7 +7,9 @@ from datetime import datetime, timedelta
 from .constants import (
     TIPOS_DOCUMENTO, TIPOS_PARTICIPANTE, TIPOS_ACTIVIDAD, TIPOS_REUNION,
     ESTADOS_REUNION, MODALIDADES_REUNION, CATEGORIAS_ACUERDO, 
-    ESTADOS_ACUERDO, PRIORIDADES, get_choice_display
+    ESTADOS_ACUERDO, PRIORIDADES, SEXOS, AREAS_DEPARTAMENTO,
+    CATEGORIAS_FORMATIVAS, CURSOS_ESPECIFICOS, PLANTELES_TECNM,
+    ROLES_USUARIO, get_choice_display
 )
 
 # Modelos embebidos (nested objects)
@@ -31,12 +33,16 @@ class ParticipanteEmbebido(EmbeddedDocument):
     apellido_materno = StringField(max_length=100)
     email = EmailField(required=True)
     telefono = StringField(max_length=20)
-    instituto = StringField(required=True, max_length=200)
-    departamento = StringField(max_length=100)
-    tipo_participante = StringField(max_length=20, choices=TIPOS_PARTICIPANTE)
+    plantel_tecnm = StringField(required=True, max_length=50, choices=PLANTELES_TECNM)
+    area_departamento = StringField(max_length=50, choices=AREAS_DEPARTAMENTO)
+    tipo_participante = StringField(max_length=30, choices=TIPOS_PARTICIPANTE)
     confirmado = BooleanField(default=False)
     fecha_confirmacion = DateTimeField()
     observaciones = StringField()
+    
+    meta = {
+        'strict': False  # Permitir campos adicionales durante migración
+    }
 
 class SeguimientoEmbebido(EmbeddedDocument):
     """Seguimiento embebido dentro de acuerdos"""
@@ -167,14 +173,38 @@ class Acuerdo(Document):
 class Participante(Document):
     """Modelo independiente para participantes (cuando se necesita acceso directo)"""
     
+    # Datos personales básicos
     nombre = StringField(required=True, max_length=100)
     apellido_paterno = StringField(required=True, max_length=100)
     apellido_materno = StringField(max_length=100)
+    rfc = StringField(max_length=13, sparse=True)  # sparse permite múltiples valores null
+    curp = StringField(max_length=18, sparse=True)  # sparse permite múltiples valores null
+    
+    # Datos demográficos
+    sexo = StringField(max_length=1, choices=SEXOS)
+    edad = IntField(min_value=18, max_value=100)
+    
+    # Contacto
     email = EmailField(required=True, unique=True)
     telefono = StringField(max_length=20)
-    instituto = StringField(required=True, max_length=200)
-    departamento = StringField(max_length=100)
-    tipo_participante = StringField(max_length=20, choices=TIPOS_PARTICIPANTE)
+    
+    # Información institucional
+    plantel_tecnm = StringField(required=True, max_length=50, choices=PLANTELES_TECNM)
+    area_departamento = StringField(max_length=50, choices=AREAS_DEPARTAMENTO)
+    puesto = StringField(max_length=200)  # Puesto o cargo
+    tipo_participante = StringField(max_length=30, choices=TIPOS_PARTICIPANTE)
+    
+    # Jerarquía institucional
+    director = StringField(max_length=200)  # Nombre del director
+    correo_direccion = EmailField()  # Correo de la dirección
+    jefe_inmediato = StringField(max_length=200)  # Nombre del jefe inmediato
+    correo_jefe_inmediato = EmailField()  # Correo del jefe inmediato
+    
+    # Capacitación y formación
+    categoria_formativa = StringField(max_length=30, choices=CATEGORIAS_FORMATIVAS)
+    cursos_especificos = ListField(StringField(max_length=50, choices=CURSOS_ESPECIFICOS))
+    
+    # Control de participación
     confirmado = BooleanField(default=False)
     fecha_confirmacion = DateTimeField()
     observaciones = StringField()
@@ -185,7 +215,8 @@ class Participante(Document):
     meta = {
         'collection': 'participantes',
         'ordering': ['apellido_paterno', 'nombre'],
-        'indexes': ['email', 'instituto', 'tipo_participante']
+        'indexes': ['email', 'plantel_tecnm', 'tipo_participante', 'categoria_formativa'],
+        'strict': False  # Permite campos adicionales durante la migración
     }
     
     def __str__(self):
@@ -193,6 +224,20 @@ class Participante(Document):
     
     def get_tipo_participante_display(self):
         return get_choice_display(TIPOS_PARTICIPANTE, self.tipo_participante)
+    
+    @property
+    def instituto(self):
+        """Propiedad de compatibilidad para templates que usan instituto"""
+        if hasattr(self, 'plantel_tecnm') and self.plantel_tecnm:
+            return get_choice_display(PLANTELES_TECNM, self.plantel_tecnm)
+        return "No especificado"
+    
+    @property
+    def departamento(self):
+        """Propiedad de compatibilidad para templates que usan departamento"""
+        if hasattr(self, 'area_departamento') and self.area_departamento:
+            return get_choice_display(AREAS_DEPARTAMENTO, self.area_departamento)
+        return ""
 
 class Documento(Document):
     """Modelo independiente para documentos (cuando se necesita acceso directo)"""
@@ -223,3 +268,57 @@ class Documento(Document):
     
     def get_tipo_display(self):
         return get_choice_display(TIPOS_DOCUMENTO, self.tipo)
+
+
+class PerfilUsuario(Document):
+    """Perfil extendido para usuarios del sistema"""
+    
+    # Relación con el usuario de Django (almacenar ID del usuario)
+    usuario_id = IntField(unique=True, required=True)  # ID del usuario de Django
+    username = StringField(max_length=150, unique=True, required=True)  # Username del usuario
+    
+    # Datos del perfil
+    participante = ReferenceField(Participante)  # Referencia al participante si aplica
+    rol = StringField(max_length=20, choices=ROLES_USUARIO, default='PARTICIPANTE')
+    
+    # Control de acceso
+    activo = BooleanField(default=True)
+    fecha_creacion = DateTimeField(default=timezone.now)
+    fecha_ultimo_acceso = DateTimeField()
+    
+    # Configuraciones personales
+    notificaciones_email = BooleanField(default=True)
+    notificaciones_sistema = BooleanField(default=True)
+    
+    meta = {
+        'collection': 'perfiles_usuario',
+        'ordering': ['-fecha_creacion'],
+        'indexes': ['usuario_id', 'username', 'rol', 'activo']
+    }
+    
+    def __str__(self):
+        return f"{self.username} - {self.get_rol_display()}"
+    
+    @property
+    def usuario(self):
+        """Obtener el usuario de Django asociado"""
+        from django.contrib.auth.models import User
+        try:
+            return User.objects.get(id=self.usuario_id)
+        except User.DoesNotExist:
+            return None
+    
+    def get_rol_display(self):
+        return get_choice_display(ROLES_USUARIO, self.rol)
+    
+    def puede_editar_reunion(self, reunion=None):
+        """Verifica si el usuario puede editar reuniones"""
+        return self.rol in ['EDITOR', 'ADMIN']
+    
+    def puede_administrar_sistema(self):
+        """Verifica si el usuario puede administrar el sistema"""
+        return self.rol == 'ADMIN'
+    
+    def puede_ver_todas_reuniones(self):
+        """Verifica si el usuario puede ver todas las reuniones"""
+        return self.rol in ['EDITOR', 'ADMIN']

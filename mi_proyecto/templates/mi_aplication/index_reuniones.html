@@ -83,7 +83,7 @@
             <div class="card-header card-header-tecnm">
                 <h5 class="mb-0">
                     <i class="fas fa-calendar-plus me-2"></i>
-                    Próximas Reuniones
+                    Reuniones Recientes y Próximas
                 </h5>
             </div>
             <div class="card-body">
@@ -93,7 +93,17 @@
                         <div class="list-group-item border-0 px-0">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">{{ reunion.titulo }}</h6>
-                                <small class="text-muted">{{ reunion.fecha_inicio|date:"d/m/Y" }}</small>
+                                <div>
+                                    <small class="text-muted me-2">{{ reunion.fecha_inicio|date:"d/m/Y" }}</small>
+                                    {% now "Y-m-d" as today %}
+                                    {% if reunion.fecha_inicio|date:"Y-m-d" < today %}
+                                        <span class="badge bg-secondary">Pasada</span>
+                                    {% elif reunion.fecha_inicio|date:"Y-m-d" == today %}
+                                        <span class="badge bg-warning">Hoy</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Próxima</span>
+                                    {% endif %}
+                                </div>
                             </div>
                             <p class="mb-1 text-muted">{{ reunion.sede }}</p>
                             <div class="d-flex justify-content-between align-items-center">
@@ -106,10 +116,13 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted text-center py-3">
-                        <i class="fas fa-calendar-times fa-2x mb-2"></i><br>
-                        No hay reuniones programadas próximamente
-                    </p>
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-3">No hay reuniones registradas</p>
+                        <a href="{% url 'crear_reunion' %}" class="btn btn-tecnm-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Crear Primera Reunión
+                        </a>
+                    </div>
                 {% endif %}
             </div>
             <div class="card-footer text-center">

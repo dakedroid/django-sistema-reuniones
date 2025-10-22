@@ -15,6 +15,11 @@ TIPOS_REUNION = [
     ('RNTI', 'Reunión Nacional de Tecnologías de la Información'),
     ('RNRH', 'Reunión Nacional de Recursos Humanos'),
     ('RNAF', 'Reunión Nacional de Administración y Finanzas'),
+    ('CURSO_CAPACITACION', 'Curso de Capacitación'),
+    ('TALLER', 'Taller'),
+    ('SEMINARIO', 'Seminario'),
+    ('CONFERENCIA', 'Conferencia'),
+    ('DIPLOMADO', 'Diplomado'),
     ('OTRA', 'Otra Reunión Nacional'),
 ]
 
@@ -99,7 +104,102 @@ TIPOS_DOCUMENTO = [
     ('CONTRATO', 'Contrato'),
     ('ESTADISTICAS', 'Estadísticas'),
     ('NORMATIVA', 'Normativa'),
+    ('CONSTANCIA', 'Constancia'),
+    ('CERTIFICADO', 'Certificado'),
+    ('DIPLOMA', 'Diploma'),
     ('OTRO', 'Otro'),
+]
+
+# ===== OPCIONES DE SEXO =====
+SEXOS = [
+    ('M', 'Masculino'),
+    ('F', 'Femenino'),
+    ('N', 'No especifica'),
+]
+
+# ===== ÁREAS DEPARTAMENTALES =====
+AREAS_DEPARTAMENTO = [
+    ('SISTEMAS_COMPUTACIONALES', 'Sistemas Computacionales'),
+    ('INDUSTRIAL', 'Ingeniería Industrial'),
+    ('ELECTRONICA', 'Ingeniería Electrónica'),
+    ('MECANICA', 'Ingeniería Mecánica'),
+    ('CIVIL', 'Ingeniería Civil'),
+    ('QUIMICA', 'Ingeniería Química'),
+    ('ELECTRICA', 'Ingeniería Eléctrica'),
+    ('GESTION_EMPRESARIAL', 'Gestión Empresarial'),
+    ('CONTADOR_PUBLICO', 'Contador Público'),
+    ('ADMINISTRACION', 'Administración'),
+    ('MATEMATICAS', 'Matemáticas y Ciencias Básicas'),
+    ('HUMANIDADES', 'Humanidades y Ciencias Sociales'),
+    ('INVESTIGACION', 'Investigación y Posgrado'),
+    ('VINCULACION', 'Vinculación'),
+    ('PLANEACION', 'Planeación y Evaluación'),
+    ('RECURSOS_HUMANOS', 'Recursos Humanos'),
+    ('FINANZAS', 'Recursos Financieros'),
+    ('MATERIALES', 'Recursos Materiales'),
+    ('SERVICIOS_ESCOLARES', 'Servicios Escolares'),
+    ('BIBLIOTECA', 'Biblioteca'),
+    ('COMPUTO', 'Centro de Cómputo'),
+    ('MANTENIMIENTO', 'Mantenimiento'),
+    ('DIRECCION', 'Dirección'),
+    ('SUBDIRECCION_ACADEMICA', 'Subdirección Académica'),
+    ('SUBDIRECCION_PLANEACION', 'Subdirección de Planeación'),
+    ('OTRA', 'Otra Área'),
+]
+
+# ===== CATEGORÍAS FORMATIVAS =====
+CATEGORIAS_FORMATIVAS = [
+    ('DOCENTE_TECNM', 'Docente TecNM'),
+    ('MATEMATICAS_CIENCIAS', 'Matemáticas y Ciencias Básicas'),
+    ('FORMACION_DISCIPLINAR', 'Formación Disciplinar'),
+    ('PSICOPEDAGOGIA_E_INVESTIGACION', 'Psicopedagogía e Investigación'),
+    ('TECNOLOGIAS_DIGITALES','Tecnologías Digitales'),
+    ('EMPRENDIMIENTO_FINANZAS', 'Emprendimiento y Finanzas'),
+    ('GESTION_LIDERAZGO', 'Gestión y Liderazgo'),
+]
+
+# ===== CURSOS ESPECÍFICOS =====
+CURSOS_ESPECIFICOS = [
+    # Tecnología e Innovación
+    ('CIENCIA_DATOS', 'Ciencia de Datos'),
+    ('INTELIGENCIA_ARTIFICIAL', 'Inteligencia Artificial'),
+    ('DESARROLLO_DE_APLICACIONES', 'Desarrollo de Aplicaciones'),
+    ('CIBERSEGURIDAD', 'Ciberseguridad'),
+    
+    # Educación y Pedagogía
+    ('PEDAGOGIA_DIGITAL', 'Pedagogía Digital'),
+    ('EVALUACION_EDUCATIVA', 'Evaluación Educativa'),
+    ('DISEÑO_CURRICULAR', 'Diseño Curricular'),
+    ('COMPETENCIAS_DIGITALES', 'Competencias Digitales'),
+    ('METODOLOGIAS_ACTIVAS', 'Metodologías Activas de Aprendizaje'),
+    ('EDUCACION_VIRTUAL', 'Educación Virtual'),
+    
+    # Gestión y Administración
+    ('LIDERAZGO', 'Liderazgo'),
+    ('GESTION_PROYECTOS', 'Gestión de Proyectos'),
+    ('ADMINISTRACION_PUBLICA', 'Administración Pública'),
+    ('FINANZAS_PUBLICAS', 'Finanzas Públicas'),
+    ('RECURSOS_HUMANOS', 'Gestión de Recursos Humanos'),
+    ('CALIDAD_EDUCATIVA', 'Calidad Educativa'),
+    ('PLANEACION_ESTRATEGICA', 'Planeación Estratégica'),
+    
+    # Investigación
+    ('METODOLOGIA_INVESTIGACION', 'Metodología de la Investigación'),
+    ('ESTADISTICA_AVANZADA', 'Estadística Avanzada'),
+    ('REDACCION_CIENTIFICA', 'Redacción Científica'),
+    ('PROPIEDAD_INTELECTUAL', 'Propiedad Intelectual'),
+    
+    # Idiomas
+    ('INGLES_TECNICO', 'Inglés Técnico'),
+    ('FRANCES', 'Francés'),
+    ('ALEMAN', 'Alemán'),
+    
+    # Otros
+    ('SUSTENTABILIDAD', 'Sustentabilidad'),
+    ('EMPRENDIMIENTO', 'Emprendimiento'),
+    ('INNOVACION_EDUCATIVA', 'Innovación Educativa'),
+    ('VINCULACION_EMPRESA', 'Vinculación con la Empresa'),
+    ('OTRO', 'Otro Curso'),
 ]
 
 # ===== FORMATOS DE ARCHIVO =====
@@ -160,6 +260,111 @@ DEPARTAMENTOS_ACADEMICOS = [
     ('ADMINISTRACION', 'Administración y Finanzas'),
     ('DIRECCION', 'Dirección'),
     ('OTRO', 'Otro Departamento'),
+]
+
+# ===== CATÁLOGO DE PLANTELES TECNM =====
+PLANTELES_TECNM = [
+    # Región Noroeste
+    ('ITT_TIJUANA', 'Instituto Tecnológico de Tijuana'),
+    ('ITT_MEXICALI', 'Instituto Tecnológico de Mexicali'),
+    ('ITT_ENSENADA', 'Instituto Tecnológico de Ensenada'),
+    ('ITT_LA_PAZ', 'Instituto Tecnológico de La Paz'),
+    ('ITT_LOS_CABOS', 'Instituto Tecnológico de Los Cabos'),
+    ('ITT_HERMOSILLO', 'Instituto Tecnológico de Hermosillo'),
+    ('ITT_NOGALES', 'Instituto Tecnológico de Nogales'),
+    ('ITT_CIUDAD_OBREGON', 'Instituto Tecnológico de Ciudad Obregón'),
+    ('ITT_GUAYMAS', 'Instituto Tecnológico de Guaymas'),
+    ('ITT_CULIACAN', 'Instituto Tecnológico de Culiacán'),
+    ('ITT_MAZATLAN', 'Instituto Tecnológico de Mazatlán'),
+    ('ITT_LOS_MOCHIS', 'Instituto Tecnológico de Los Mochis'),
+    
+    # Región Norte
+    ('ITT_CHIHUAHUA', 'Instituto Tecnológico de Chihuahua'),
+    ('ITT_CIUDAD_JUAREZ', 'Instituto Tecnológico de Ciudad Juárez'),
+    ('ITT_DELICIAS', 'Instituto Tecnológico de Delicias'),
+    ('ITT_PARRAL', 'Instituto Tecnológico de Parral'),
+    ('ITT_DURANGO', 'Instituto Tecnológico de Durango'),
+    ('ITT_GOMEZ_PALACIO', 'Instituto Tecnológico de Gómez Palacio'),
+    ('ITT_TORREON', 'Instituto Tecnológico de Torreón'),
+    ('ITT_SALTILLO', 'Instituto Tecnológico de Saltillo'),
+    ('ITT_MONCLOVA', 'Instituto Tecnológico de Monclova'),
+    ('ITT_PIEDRAS_NEGRAS', 'Instituto Tecnológico de Piedras Negras'),
+    
+    # Región Noreste
+    ('ITT_MONTERREY', 'Instituto Tecnológico de Monterrey Campus TecNM'),
+    ('ITT_NUEVO_LAREDO', 'Instituto Tecnológico de Nuevo Laredo'),
+    ('ITT_REYNOSA', 'Instituto Tecnológico de Reynosa'),
+    ('ITT_MATAMOROS', 'Instituto Tecnológico de Matamoros'),
+    ('ITT_CIUDAD_VICTORIA', 'Instituto Tecnológico de Ciudad Victoria'),
+    ('ITT_TAMPICO', 'Instituto Tecnológico de Tampico'),
+    ('ITT_MADERO', 'Instituto Tecnológico de Cd. Madero'),
+    
+    # Región Occidente
+    ('ITT_GUADALAJARA', 'Instituto Tecnológico de Guadalajara'),
+    ('ITT_ZAPOPAN', 'Instituto Tecnológico de Zapopan'),
+    ('ITT_PUERTO_VALLARTA', 'Instituto Tecnológico de Puerto Vallarta'),
+    ('ITT_COLIMA', 'Instituto Tecnológico de Colima'),
+    ('ITT_MANZANILLO', 'Instituto Tecnológico de Manzanillo'),
+    ('ITT_AGUASCALIENTES', 'Instituto Tecnológico de Aguascalientes'),
+    ('ITT_ZACATECAS', 'Instituto Tecnológico de Zacatecas'),
+    ('ITT_FRESNILLO', 'Instituto Tecnológico de Fresnillo'),
+    
+    # Región Centro Occidente
+    ('ITT_MORELIA', 'Instituto Tecnológico de Morelia'),
+    ('ITT_URUAPAN', 'Instituto Tecnológico de Uruapan'),
+    ('ITT_LAZARO_CARDENAS', 'Instituto Tecnológico de Lázaro Cárdenas'),
+    ('ITT_LEON', 'Instituto Tecnológico de León'),
+    ('ITT_CELAYA', 'Instituto Tecnológico de Celaya'),
+    ('ITT_IRAPUATO', 'Instituto Tecnológico de Irapuato'),
+    ('ITT_SAN_LUIS_POTOSI', 'Instituto Tecnológico de San Luis Potosí'),
+    
+    # Región Centro
+    ('ITT_TOLUCA', 'Instituto Tecnológico de Toluca'),
+    ('ITT_PACHUCA', 'Instituto Tecnológico de Pachuca'),
+    ('ITT_TULA_TEPEJI', 'Instituto Tecnológico de Tula-Tepeji'),
+    ('ITT_QUERETARO', 'Instituto Tecnológico de Querétaro'),
+    ('ITT_TLALNEPANTLA', 'Instituto Tecnológico de Tlalnepantla'),
+    ('ITT_VALLE_MEXICO', 'Instituto Tecnológico del Valle de México'),
+    
+    # Región Oriente
+    ('ITT_PUEBLA', 'Instituto Tecnológico de Puebla'),
+    ('ITT_TEHUACAN', 'Instituto Tecnológico de Tehuacán'),
+    ('ITT_VERACRUZ', 'Instituto Tecnológico de Veracruz'),
+    ('ITT_XALAPA', 'Instituto Tecnológico de Xalapa'),
+    ('ITT_ORIZABA', 'Instituto Tecnológico de Orizaba'),
+    ('ITT_MINATITLAN', 'Instituto Tecnológico de Minatitlán'),
+    ('ITT_TLAXLA', 'Instituto Tecnológico de Tlaxcala'),
+    
+    # Región Sur Sureste
+    ('ITT_OAXACA', 'Instituto Tecnológico de Oaxaca'),
+    ('ITT_TUXTLA_GUTIERREZ', 'Instituto Tecnológico de Tuxtla Gutiérrez'),
+    ('ITT_TAPACHULA', 'Instituto Tecnológico de Tapachula'),
+    ('ITT_VILLAHERMOSA', 'Instituto Tecnológico de Villahermosa'),
+    ('ITT_MERIDA', 'Instituto Tecnológico de Mérida'),
+    ('ITT_CAMPECHE', 'Instituto Tecnológico de Campeche'),
+    ('ITT_CHETUMAL', 'Instituto Tecnológico de Chetumal'),
+    ('ITT_CANCUN', 'Instituto Tecnológico de Cancún'),
+    
+    # Universidades Tecnológicas
+    ('UTT_HERMOSILLO', 'Universidad Tecnológica de Hermosillo'),
+    ('UTT_TIJUANA', 'Universidad Tecnológica de Tijuana'),
+    ('UTT_PUEBLA', 'Universidad Tecnológica de Puebla'),
+    ('UTT_NEZAHUALCOYOTL', 'Universidad Tecnológica de Nezahualcóyotl'),
+    
+    # Institutos Tecnológicos Descentralizados
+    ('ITD_CHIHUAHUA_II', 'Instituto Tecnológico de Chihuahua II'),
+    ('ITD_ESTUDIOS_SUPERIORES_MONTERREY', 'Instituto Tecnológico de Estudios Superiores de Monterrey'),
+    
+    # Oficinas Centrales
+    ('TECNM_OFICINAS_CENTRALES', 'TecNM - Oficinas Centrales'),
+    ('OTRO_PLANTEL', 'Otro Plantel'),
+]
+
+# ===== ROLES DEL SISTEMA =====
+ROLES_USUARIO = [
+    ('PARTICIPANTE', 'Participante'),
+    ('EDITOR', 'Editor'),
+    ('ADMIN', 'Administrador'),
 ]
 
 # ===== CONFIGURACIONES DEL SISTEMA =====

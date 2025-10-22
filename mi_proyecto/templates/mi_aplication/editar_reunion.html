@@ -53,10 +53,9 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="estado" class="form-label">Estado *</label>
                                         <select class="form-select" id="estado" name="estado" required>
-                                            <option value="PLANIFICADA" {% if reunion.estado == 'PLANIFICADA' %}selected{% endif %}>Planificada</option>
-                                            <option value="EN_CURSO" {% if reunion.estado == 'EN_CURSO' %}selected{% endif %}>En Curso</option>
-                                            <option value="FINALIZADA" {% if reunion.estado == 'FINALIZADA' %}selected{% endif %}>Finalizada</option>
-                                            <option value="CANCELADA" {% if reunion.estado == 'CANCELADA' %}selected{% endif %}>Cancelada</option>
+                                            {% for codigo, nombre in estados %}
+                                                <option value="{{ codigo }}" {% if reunion.estado == codigo %}selected{% endif %}>{{ nombre }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
